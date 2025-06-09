@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check } from 'lucide-react';
 
 interface CallItem {
   id: string;
@@ -141,6 +141,7 @@ function App() {
     phoneNumber: '',
     comments: ''
   });
+  const [copied, setCopied] = useState(false);
 
   const toggleItem = (id: string) => {
     setCallItems(prev => prev.map(item => 
@@ -158,10 +159,48 @@ function App() {
       phoneNumber: '',
       comments: ''
     });
+    setCopied(false);
   };
 
   const updateCallInfo = (field: keyof CallInfo, value: string) => {
     setCallInfo(prev => ({ ...prev, [field]: value }));
+  };
+
+  const copyToClipboard = async () => {
+    const callData = `XFINITY CALL INFORMATION
+========================
+Call #: ${currentCall}
+Date: ${new Date().toLocaleDateString()}
+Time: ${callStartTime.toLocaleTimeString()}
+
+CUSTOMER DETAILS:
+Account Number: ${callInfo.accountNumber || 'Not provided'}
+Customer Name: ${callInfo.customerName || 'Not provided'}
+Phone Number: ${callInfo.phoneNumber || 'Not provided'}
+
+ADDITIONAL COMMENTS:
+${callInfo.comments || 'No additional comments'}
+
+CALL PROGRESS:
+Completed Steps: ${completedCount}/${totalCount}
+Progress: ${Math.round(progressPercentage)}%`;
+
+    try {
+      await navigator.clipboard.writeText(callData);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = callData;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const completedCount = callItems.filter(item => item.completed).length;
@@ -225,9 +264,31 @@ function App() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Customer Information Section */}
         <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
-          <div className="flex items-center space-x-3 mb-6">
-            <UserCheck className="w-6 h-6 text-blue-400" />
-            <h2 className="text-xl font-semibold text-white">Customer Information</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <UserCheck className="w-6 h-6 text-blue-400" />
+              <h2 className="text-xl font-semibold text-white">Customer Information</h2>
+            </div>
+            <button
+              onClick={copyToClipboard}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 shadow-lg ${
+                copied 
+                  ? 'bg-emerald-600 text-white' 
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  <span>Copy Info</span>
+                </>
+              )}
+            </button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -399,12 +460,34 @@ function App() {
               You've completed all {totalCount} steps of the Xfinity call structure. 
               Great job following the professional protocol!
             </p>
-            <button
-              onClick={resetCall}
-              className="bg-white text-emerald-600 px-6 py-2 rounded-lg font-semibold hover:bg-emerald-50 transition-colors duration-200 shadow-lg"
-            >
-              Start New Call
-            </button>
+            <div className="flex space-x-4">
+              <button
+                onClick={resetCall}
+                className="bg-white text-emerald-600 px-6 py-2 rounded-lg font-semibold hover:bg-emerald-50 transition-colors duration-200 shadow-lg"
+              >
+                Start New Call
+              </button>
+              <button
+                onClick={copyToClipboard}
+                className={`flex items-center space-x-2 px-6 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg ${
+                  copied 
+                    ? 'bg-emerald-800 text-white' 
+                    : 'bg-emerald-800 hover:bg-emerald-900 text-white'
+                }`}
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    <span>Copy Summary</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         )}
       </div>

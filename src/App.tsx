@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck } from 'lucide-react';
 
 interface CallItem {
   id: string;
@@ -8,6 +8,13 @@ interface CallItem {
   icon: React.ComponentType<any>;
   completed: boolean;
   category: 'opening' | 'connection' | 'service' | 'closing';
+}
+
+interface CallInfo {
+  accountNumber: string;
+  customerName: string;
+  phoneNumber: string;
+  comments: string;
 }
 
 function App() {
@@ -128,6 +135,12 @@ function App() {
 
   const [currentCall, setCurrentCall] = useState(1);
   const [callStartTime, setCallStartTime] = useState<Date>(new Date());
+  const [callInfo, setCallInfo] = useState<CallInfo>({
+    accountNumber: '',
+    customerName: '',
+    phoneNumber: '',
+    comments: ''
+  });
 
   const toggleItem = (id: string) => {
     setCallItems(prev => prev.map(item => 
@@ -139,6 +152,16 @@ function App() {
     setCallItems(prev => prev.map(item => ({ ...item, completed: false })));
     setCurrentCall(prev => prev + 1);
     setCallStartTime(new Date());
+    setCallInfo({
+      accountNumber: '',
+      customerName: '',
+      phoneNumber: '',
+      comments: ''
+    });
+  };
+
+  const updateCallInfo = (field: keyof CallInfo, value: string) => {
+    setCallInfo(prev => ({ ...prev, [field]: value }));
   };
 
   const completedCount = callItems.filter(item => item.completed).length;
@@ -177,7 +200,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
       {/* Header */}
       <header className="bg-gray-800 shadow-xl border-b border-gray-700">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-blue-600 rounded-lg shadow-lg">
@@ -199,7 +222,73 @@ function App() {
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        {/* Customer Information Section */}
+        <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
+          <div className="flex items-center space-x-3 mb-6">
+            <UserCheck className="w-6 h-6 text-blue-400" />
+            <h2 className="text-xl font-semibold text-white">Customer Information</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+                <Hash className="w-4 h-4" />
+                <span>Account Number</span>
+              </label>
+              <input
+                type="text"
+                value={callInfo.accountNumber}
+                onChange={(e) => updateCallInfo('accountNumber', e.target.value)}
+                placeholder="Enter account number"
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+            
+            <div>
+              <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+                <User className="w-4 h-4" />
+                <span>Customer Name</span>
+              </label>
+              <input
+                type="text"
+                value={callInfo.customerName}
+                onChange={(e) => updateCallInfo('customerName', e.target.value)}
+                placeholder="Enter customer name"
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+            
+            <div>
+              <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+                <Phone className="w-4 h-4" />
+                <span>Phone Number</span>
+              </label>
+              <input
+                type="tel"
+                value={callInfo.phoneNumber}
+                onChange={(e) => updateCallInfo('phoneNumber', e.target.value)}
+                placeholder="Enter phone number"
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+          </div>
+          
+          <div className="mt-6">
+            <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+              <FileText className="w-4 h-4" />
+              <span>Additional Comments</span>
+            </label>
+            <textarea
+              value={callInfo.comments}
+              onChange={(e) => updateCallInfo('comments', e.target.value)}
+              placeholder="Enter any additional notes or comments about this call..."
+              rows={4}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+            />
+          </div>
+        </div>
+
         {/* Progress Section */}
         <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -286,6 +375,25 @@ function App() {
             <div className="flex items-center space-x-3 mb-4">
               <CheckCircle2 className="w-8 h-8" />
               <h3 className="text-xl font-bold">Call Completed Successfully!</h3>
+            </div>
+            <div className="bg-emerald-800/30 rounded-lg p-4 mb-4">
+              <h4 className="font-semibold mb-2">Call Summary:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium">Account:</span> {callInfo.accountNumber || 'Not provided'}
+                </div>
+                <div>
+                  <span className="font-medium">Customer:</span> {callInfo.customerName || 'Not provided'}
+                </div>
+                <div>
+                  <span className="font-medium">Phone:</span> {callInfo.phoneNumber || 'Not provided'}
+                </div>
+              </div>
+              {callInfo.comments && (
+                <div className="mt-3">
+                  <span className="font-medium">Comments:</span> {callInfo.comments}
+                </div>
+              )}
             </div>
             <p className="text-emerald-100 mb-4">
               You've completed all {totalCount} steps of the Xfinity call structure. 

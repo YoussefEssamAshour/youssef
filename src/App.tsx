@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign } from 'lucide-react';
 
 interface CallItem {
   id: string;
@@ -17,7 +17,14 @@ interface CallInfo {
   comments: string;
 }
 
+interface Objection {
+  id: string;
+  objection: string;
+  solution: string;
+}
+
 function App() {
+  const [currentView, setCurrentView] = useState<'tracker' | 'objections'>('tracker');
   const [callItems, setCallItems] = useState<CallItem[]>([
     {
       id: 'greeting',
@@ -133,6 +140,54 @@ function App() {
     }
   ]);
 
+  const [objections, setObjections] = useState<Objection[]>([
+    {
+      id: 'too-expensive',
+      objection: 'Too Expensive',
+      solution: 'I totally understand that reducing monthly charges is really important. Believe me. I try to do that too! Earlier we discussed something customer has mentioned that turned into a need for a line) so it def sounds like something you\'ll be using on the long-term.'
+    },
+    {
+      id: 'check-with-spouse',
+      objection: 'Have to check in with my wife/husband',
+      solution: 'I absolutely understand you would want to talk to your partner first. What questions do you think your wife will have?'
+    },
+    {
+      id: 'need-to-think',
+      objection: 'Need to think about it',
+      solution: 'I totally understand you may need time to think about it. Maybe I can help clear things up. What are your concerns?'
+    },
+    {
+      id: 'under-contract',
+      objection: 'I\'m under a contract',
+      solution: 'Mr. Customer. I totally understand that you\'re under a contract but let me tell you that the $20 you\'re saving every month by switching to Xfinity mobile can cover for any possible ETF in a year\'s time! So, it\'s definitely a save in the long run, as well, it seems perfectly suited for you and your family\'s needs'
+    },
+    {
+      id: 'dont-need-line',
+      objection: 'Don\'t need the line',
+      solution: 'Mr. Customer, I totally understand how it might seem that way but based on what you told me (customer\'s needs) it definitely sounds like something you\'ll be needing and using to get the lifestyle you deserve'
+    },
+    {
+      id: 'get-at-store',
+      objection: 'I\'m going to get it at the store',
+      solution: 'Mr. Customer. I totally understand you want to speak to someone face-to-face. What concerns do you have about doing this over the phone by the way? By the way, if you\'re concerned about delivery. I can sign you up for a promotion on free express shipping and guarantee the phone will be delivered asap but I wouldn\'t be able to guarantee you\'d be able to find that device in the store\'s stock'
+    },
+    {
+      id: 'family-has-phones',
+      objection: 'All family members have their own phones',
+      solution: 'Mr. Customer, that\'s great to hear how connected you all are as a family together! Let me tell you, however about how much money you\'re saving for yourself paying $XX less for each line when you add that friend and you can have them Venmo you the money each month'
+    },
+    {
+      id: 'not-good-time',
+      objection: 'It\'s not a good time / it\'s not the right time',
+      solution: 'I definitely want to make sure you\'re comfortable with the pace we\'re moving with. What do you think might change between now and the next XX months that is making you want to wait?'
+    },
+    {
+      id: 'good-with-current',
+      objection: 'I\'m good with my current provider',
+      solution: 'I\'m glad that you\'re doing well with your current provider and not facing any kind of issues but if it\'s affecting your expenses in a bad way I think you need to rethink it especially when all the prices are going up and up. I mean your money is better off in your pocket could calculate all the savings that we\'ll save by switching and after this it\'s your call'
+    }
+  ]);
+
   const [currentCall, setCurrentCall] = useState(1);
   const [callStartTime, setCallStartTime] = useState<Date>(new Date());
   const [callInfo, setCallInfo] = useState<CallInfo>({
@@ -164,6 +219,12 @@ function App() {
 
   const updateCallInfo = (field: keyof CallInfo, value: string) => {
     setCallInfo(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateObjection = (id: string, field: 'objection' | 'solution', value: string) => {
+    setObjections(prev => prev.map(obj => 
+      obj.id === id ? { ...obj, [field]: value } : obj
+    ));
   };
 
   const copyToClipboard = async () => {
@@ -235,6 +296,132 @@ Progress: ${Math.round(progressPercentage)}%`;
     return acc;
   }, {} as Record<string, CallItem[]>);
 
+  if (currentView === 'objections') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+        {/* Header */}
+        <header className="bg-gray-800 shadow-xl border-b border-gray-700">
+          <div className="max-w-6xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-orange-600 rounded-lg shadow-lg">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-white">Objection Handling</h1>
+                  <p className="text-sm text-gray-300">Customer objections and proven responses</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setCurrentView('tracker')}
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Tracker</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <div className="mb-8">
+            <div className="bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl shadow-xl p-6 text-white">
+              <h2 className="text-xl font-bold mb-2">Objection Handling Guide</h2>
+              <p className="text-orange-100">
+                Below are common customer objections and proven responses to overcome them. 
+                You can edit these responses to match your style and approach.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {objections.map((objection, index) => (
+              <div key={objection.id} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-orange-600 to-orange-700 px-6 py-4">
+                  <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
+                    <span className="bg-white text-orange-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      {index + 1}
+                    </span>
+                    <span>Customer Objection</span>
+                  </h3>
+                </div>
+                
+                <div className="p-6 space-y-6">
+                  {/* Objection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Objection:
+                    </label>
+                    <input
+                      type="text"
+                      value={objection.objection}
+                      onChange={(e) => updateObjection(objection.id, 'objection', e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 font-semibold text-lg"
+                    />
+                  </div>
+
+                  {/* Solution */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Response/Solution:
+                    </label>
+                    <textarea
+                      value={objection.solution}
+                      onChange={(e) => updateObjection(objection.id, 'solution', e.target.value)}
+                      rows={4}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Preview */}
+                  <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-300 mb-2">Preview:</h4>
+                    <div className="space-y-2">
+                      <p className="text-red-400 font-semibold">
+                        <span className="text-gray-400">Customer:</span> "{objection.objection}"
+                      </p>
+                      <p className="text-emerald-400">
+                        <span className="text-gray-400">Your Response:</span> "{objection.solution}"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tips Section */}
+          <div className="mt-8 bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+              <HelpCircle className="w-5 h-5 text-blue-400" />
+              <span>Objection Handling Tips</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-blue-400">Key Principles:</h4>
+                <ul className="space-y-1 text-sm">
+                  <li>• Listen actively and acknowledge their concern</li>
+                  <li>• Empathize before presenting solutions</li>
+                  <li>• Ask clarifying questions to understand the real issue</li>
+                  <li>• Connect benefits to their specific needs</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-emerald-400">Best Practices:</h4>
+                <ul className="space-y-1 text-sm">
+                  <li>• Use their name when responding</li>
+                  <li>• Provide specific examples and calculations</li>
+                  <li>• Create urgency when appropriate</li>
+                  <li>• Always confirm understanding before moving forward</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
       {/* Header */}
@@ -250,13 +437,23 @@ Progress: ${Math.round(progressPercentage)}%`;
                 <p className="text-sm text-gray-300">Call #{currentCall} • Started at {callStartTime.toLocaleTimeString()}</p>
               </div>
             </div>
-            <button
-              onClick={resetCall}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>New Call</span>
-            </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setCurrentView('objections')}
+                className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors duration-200 shadow-lg"
+              >
+                <DollarSign className="w-4 h-4" />
+                <span>Start Offering</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <button
+                onClick={resetCall}
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>New Call</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>

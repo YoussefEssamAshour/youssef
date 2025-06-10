@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight } from 'lucide-react';
 
 interface CallItem {
   id: string;
@@ -25,6 +25,7 @@ interface Objection {
 
 function App() {
   const [currentView, setCurrentView] = useState<'tracker' | 'objections'>('tracker');
+  const [expandedObjection, setExpandedObjection] = useState<string | null>(null);
   const [callItems, setCallItems] = useState<CallItem[]>([
     {
       id: 'greeting',
@@ -221,10 +222,8 @@ function App() {
     setCallInfo(prev => ({ ...prev, [field]: value }));
   };
 
-  const updateObjection = (id: string, field: 'objection' | 'solution', value: string) => {
-    setObjections(prev => prev.map(obj => 
-      obj.id === id ? { ...obj, [field]: value } : obj
-    ));
+  const toggleObjection = (id: string) => {
+    setExpandedObjection(expandedObjection === id ? null : id);
   };
 
   const copyToClipboard = async () => {
@@ -328,64 +327,67 @@ Progress: ${Math.round(progressPercentage)}%`;
             <div className="bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl shadow-xl p-6 text-white">
               <h2 className="text-xl font-bold mb-2">Objection Handling Guide</h2>
               <p className="text-orange-100">
-                Below are common customer objections and proven responses to overcome them. 
-                You can edit these responses to match your style and approach.
+                Click on any objection below to see the proven response. These are common customer objections and effective ways to overcome them.
               </p>
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {objections.map((objection, index) => (
               <div key={objection.id} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-orange-600 to-orange-700 px-6 py-4">
-                  <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
-                    <span className="bg-white text-orange-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                <button
+                  onClick={() => toggleObjection(objection.id)}
+                  className="w-full px-6 py-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 transition-all duration-200 flex items-center justify-between text-white"
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="bg-white text-orange-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                       {index + 1}
                     </span>
-                    <span>Customer Objection</span>
-                  </h3>
-                </div>
+                    <span className="text-lg font-semibold text-left">{objection.objection}</span>
+                  </div>
+                  {expandedObjection === objection.id ? (
+                    <ChevronDown className="w-5 h-5" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5" />
+                  )}
+                </button>
                 
-                <div className="p-6 space-y-6">
-                  {/* Objection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Objection:
-                    </label>
-                    <input
-                      type="text"
-                      value={objection.objection}
-                      onChange={(e) => updateObjection(objection.id, 'objection', e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 font-semibold text-lg"
-                    />
-                  </div>
-
-                  {/* Solution */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Response/Solution:
-                    </label>
-                    <textarea
-                      value={objection.solution}
-                      onChange={(e) => updateObjection(objection.id, 'solution', e.target.value)}
-                      rows={4}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none leading-relaxed"
-                    />
-                  </div>
-
-                  {/* Preview */}
-                  <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-gray-300 mb-2">Preview:</h4>
-                    <div className="space-y-2">
-                      <p className="text-red-400 font-semibold">
-                        <span className="text-gray-400">Customer:</span> "{objection.objection}"
-                      </p>
-                      <p className="text-emerald-400">
-                        <span className="text-gray-400">Your Response:</span> "{objection.solution}"
-                      </p>
+                {expandedObjection === objection.id && (
+                  <div className="p-6 bg-gray-900/50 border-t border-gray-600">
+                    <div className="space-y-4">
+                      <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center space-x-2">
+                          <MessageSquare className="w-4 h-4 text-blue-400" />
+                          <span>Conversation Preview:</span>
+                        </h4>
+                        <div className="space-y-3">
+                          <div className="flex items-start space-x-3">
+                            <div className="bg-red-600 rounded-full p-1">
+                              <User className="w-3 h-3 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-red-400 font-semibold text-sm">Customer:</p>
+                              <p className="text-red-300 bg-red-900/20 rounded-lg p-3 mt-1 border border-red-800/30">
+                                "{objection.objection}"
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                            <div className="bg-emerald-600 rounded-full p-1">
+                              <PhoneCall className="w-3 h-3 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-emerald-400 font-semibold text-sm">Your Response:</p>
+                              <p className="text-emerald-300 bg-emerald-900/20 rounded-lg p-3 mt-1 border border-emerald-800/30 leading-relaxed">
+                                "{objection.solution}"
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>

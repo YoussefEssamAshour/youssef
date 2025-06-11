@@ -21,6 +21,7 @@ interface Objection {
   id: string;
   objection: string;
   solution: string;
+  bgColor: string;
 }
 
 function App() {
@@ -145,47 +146,56 @@ function App() {
     {
       id: 'too-expensive',
       objection: 'Too Expensive',
-      solution: 'I totally understand that reducing monthly charges is really important. Believe me. I try to do that too! Earlier we discussed something customer has mentioned that turned into a need for a line) so it def sounds like something you\'ll be using on the long-term.'
+      solution: 'I totally understand that reducing monthly charges is really important. Believe me. I try to do that too! Earlier we discussed something customer has mentioned that turned into a need for a line) so it def sounds like something you\'ll be using on the long-term.',
+      bgColor: 'from-red-600 to-red-700'
     },
     {
       id: 'check-with-spouse',
       objection: 'Have to check in with my wife/husband',
-      solution: 'I absolutely understand you would want to talk to your partner first. What questions do you think your wife will have?'
+      solution: 'I absolutely understand you would want to talk to your partner first. What questions do you think your wife will have?',
+      bgColor: 'from-pink-600 to-pink-700'
     },
     {
       id: 'need-to-think',
       objection: 'Need to think about it',
-      solution: 'I totally understand you may need time to think about it. Maybe I can help clear things up. What are your concerns?'
+      solution: 'I totally understand you may need time to think about it. Maybe I can help clear things up. What are your concerns?',
+      bgColor: 'from-purple-600 to-purple-700'
     },
     {
       id: 'under-contract',
       objection: 'I\'m under a contract',
-      solution: 'Mr. Customer. I totally understand that you\'re under a contract but let me tell you that the $20 you\'re saving every month by switching to Xfinity mobile can cover for any possible ETF in a year\'s time! So, it\'s definitely a save in the long run, as well, it seems perfectly suited for you and your family\'s needs'
+      solution: 'Mr. Customer. I totally understand that you\'re under a contract but let me tell you that the $20 you\'re saving every month by switching to Xfinity mobile can cover for any possible ETF in a year\'s time! So, it\'s definitely a save in the long run, as well, it seems perfectly suited for you and your family\'s needs',
+      bgColor: 'from-indigo-600 to-indigo-700'
     },
     {
       id: 'dont-need-line',
       objection: 'Don\'t need the line',
-      solution: 'Mr. Customer, I totally understand how it might seem that way but based on what you told me (customer\'s needs) it definitely sounds like something you\'ll be needing and using to get the lifestyle you deserve'
+      solution: 'Mr. Customer, I totally understand how it might seem that way but based on what you told me (customer\'s needs) it definitely sounds like something you\'ll be needing and using to get the lifestyle you deserve',
+      bgColor: 'from-blue-600 to-blue-700'
     },
     {
       id: 'get-at-store',
       objection: 'I\'m going to get it at the store',
-      solution: 'Mr. Customer. I totally understand you want to speak to someone face-to-face. What concerns do you have about doing this over the phone by the way? By the way, if you\'re concerned about delivery. I can sign you up for a promotion on free express shipping and guarantee the phone will be delivered asap but I wouldn\'t be able to guarantee you\'d be able to find that device in the store\'s stock'
+      solution: 'Mr. Customer. I totally understand you want to speak to someone face-to-face. What concerns do you have about doing this over the phone by the way? By the way, if you\'re concerned about delivery. I can sign you up for a promotion on free express shipping and guarantee the phone will be delivered asap but I wouldn\'t be able to guarantee you\'d be able to find that device in the store\'s stock',
+      bgColor: 'from-cyan-600 to-cyan-700'
     },
     {
       id: 'family-has-phones',
       objection: 'All family members have their own phones',
-      solution: 'Mr. Customer, that\'s great to hear how connected you all are as a family together! Let me tell you, however about how much money you\'re saving for yourself paying $XX less for each line when you add that friend and you can have them Venmo you the money each month'
+      solution: 'Mr. Customer, that\'s great to hear how connected you all are as a family together! Let me tell you, however about how much money you\'re saving for yourself paying $XX less for each line when you add that friend and you can have them Venmo you the money each month',
+      bgColor: 'from-teal-600 to-teal-700'
     },
     {
       id: 'not-good-time',
       objection: 'It\'s not a good time / it\'s not the right time',
-      solution: 'I definitely want to make sure you\'re comfortable with the pace we\'re moving with. What do you think might change between now and the next XX months that is making you want to wait?'
+      solution: 'I definitely want to make sure you\'re comfortable with the pace we\'re moving with. What do you think might change between now and the next XX months that is making you want to wait?',
+      bgColor: 'from-emerald-600 to-emerald-700'
     },
     {
       id: 'good-with-current',
       objection: 'I\'m good with my current provider',
-      solution: 'I\'m glad that you\'re doing well with your current provider and not facing any kind of issues but if it\'s affecting your expenses in a bad way I think you need to rethink it especially when all the prices are going up and up. I mean your money is better off in your pocket could calculate all the savings that we\'ll save by switching and after this it\'s your call'
+      solution: 'I\'m glad that you\'re doing well with your current provider and not facing any kind of issues but if it\'s affecting your expenses in a bad way I think you need to rethink it especially when all the prices are going up and up. I mean your money is better off in your pocket could calculate all the savings that we\'ll save by switching and after this it\'s your call',
+      bgColor: 'from-green-600 to-green-700'
     }
   ]);
 
@@ -200,9 +210,33 @@ function App() {
   const [copied, setCopied] = useState(false);
 
   const toggleItem = (id: string) => {
-    setCallItems(prev => prev.map(item => 
-      item.id === id ? { ...item, completed: !item.completed } : item
-    ));
+    setCallItems(prev => {
+      const newItems = prev.map(item => 
+        item.id === id ? { ...item, completed: !item.completed } : item
+      );
+      
+      // Auto-progress to next item if current item was just completed
+      const clickedItem = newItems.find(item => item.id === id);
+      if (clickedItem?.completed) {
+        const currentIndex = newItems.findIndex(item => item.id === id);
+        const nextItem = newItems[currentIndex + 1];
+        
+        if (nextItem && !nextItem.completed) {
+          // Scroll to next item after a short delay
+          setTimeout(() => {
+            const nextElement = document.getElementById(`item-${nextItem.id}`);
+            if (nextElement) {
+              nextElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+              });
+            }
+          }, 300);
+        }
+      }
+      
+      return newItems;
+    });
   };
 
   const resetCall = () => {
@@ -337,10 +371,10 @@ Progress: ${Math.round(progressPercentage)}%`;
               <div key={objection.id} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
                 <button
                   onClick={() => toggleObjection(objection.id)}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 transition-all duration-200 flex items-center justify-between text-white"
+                  className={`w-full px-6 py-4 bg-gradient-to-r ${objection.bgColor} hover:opacity-90 transition-all duration-200 flex items-center justify-between text-white`}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="bg-white text-orange-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                    <span className="bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                       {index + 1}
                     </span>
                     <span className="text-lg font-semibold text-left">{objection.objection}</span>
@@ -589,6 +623,7 @@ Progress: ${Math.round(progressPercentage)}%`;
                   return (
                     <div
                       key={item.id}
+                      id={`item-${item.id}`}
                       className={`group p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
                         item.completed
                           ? 'border-emerald-500 bg-emerald-900/30 hover:bg-emerald-900/40'

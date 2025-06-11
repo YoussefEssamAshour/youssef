@@ -460,6 +460,18 @@ Progress: ${Math.round(progressPercentage)}%`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+      {/* Floating Start Offering Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <button
+          onClick={() => setCurrentView('objections')}
+          className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-orange-500/25"
+        >
+          <DollarSign className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="font-semibold">Start Offering</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+        </button>
+      </div>
+
       {/* Header */}
       <header className="bg-gray-800 shadow-xl border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -475,14 +487,6 @@ Progress: ${Math.round(progressPercentage)}%`;
             </div>
             <div className="flex items-center space-x-3">
               <button
-                onClick={() => setCurrentView('objections')}
-                className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors duration-200 shadow-lg"
-              >
-                <DollarSign className="w-4 h-4" />
-                <span>Start Offering</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <button
                 onClick={resetCall}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
               >
@@ -494,7 +498,7 @@ Progress: ${Math.round(progressPercentage)}%`;
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-8 pb-24">
         {/* Customer Information Section */}
         <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
           <div className="flex items-center justify-between mb-6">

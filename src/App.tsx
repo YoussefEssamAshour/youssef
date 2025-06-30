@@ -1,31 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight } from 'lucide-react';
-
-interface CallItem {
-  id: string;
-  title: string;
-  verbatim: string;
-  icon: React.ComponentType<any>;
-  completed: boolean;
-  category: 'opening' | 'connection' | 'service' | 'closing';
-}
-
-interface CallInfo {
-  accountNumber: string;
-  customerName: string;
-  phoneNumber: string;
-  comments: string;
-}
-
-interface Objection {
-  id: string;
-  objection: string;
-  solution: string;
-  bgColor: string;
-}
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3 } from 'lucide-react';
+import SalesTracker from './components/SalesTracker';
+import { CallItem, CallInfo, Objection, ViewType } from './types';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'tracker' | 'objections'>('tracker');
+  const [currentView, setCurrentView] = useState<ViewType>('tracker');
   const [expandedObjection, setExpandedObjection] = useState<string | null>(null);
   const [callItems, setCallItems] = useState<CallItem[]>([
     {
@@ -329,6 +308,12 @@ Progress: ${Math.round(progressPercentage)}%`;
     return acc;
   }, {} as Record<string, CallItem[]>);
 
+  // Render Sales Tracker
+  if (currentView === 'sales') {
+    return <SalesTracker onBack={() => setCurrentView('tracker')} />;
+  }
+
+  // Render Objections View
   if (currentView === 'objections') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
@@ -458,10 +443,20 @@ Progress: ${Math.round(progressPercentage)}%`;
     );
   }
 
+  // Render Main Tracker View
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
-      {/* Floating Start Offering Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
+        <button
+          onClick={() => setCurrentView('sales')}
+          className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-emerald-500/25"
+        >
+          <BarChart3 className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="font-semibold">Sales Tracker</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+        </button>
+        
         <button
           onClick={() => setCurrentView('objections')}
           className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-orange-500/25"
@@ -498,7 +493,7 @@ Progress: ${Math.round(progressPercentage)}%`;
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-8 pb-24">
+      <div className="max-w-6xl mx-auto px-6 py-8 pb-32">
         {/* Customer Information Section */}
         <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
           <div className="flex items-center justify-between mb-6">

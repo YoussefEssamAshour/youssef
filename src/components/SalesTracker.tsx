@@ -17,15 +17,18 @@ import {
   PhoneCall,
   XCircle,
   Save,
-  X
+  X,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { SaleRecord } from '../types';
 
 interface SalesTrackerProps {
   onBack: () => void;
+  isDarkMode: boolean;
 }
 
-const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
+const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack, isDarkMode }) => {
   const [sales, setSales] = useState<SaleRecord[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -40,6 +43,30 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
     saleAmount: 0,
     product: ''
   });
+
+  // Theme classes
+  const themeClasses = {
+    background: isDarkMode 
+      ? 'bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800' 
+      : 'bg-gradient-to-br from-gray-50 via-white to-gray-100',
+    cardBg: isDarkMode ? 'bg-gray-800' : 'bg-white',
+    cardBorder: isDarkMode ? 'border-gray-700' : 'border-gray-200',
+    headerBg: isDarkMode ? 'bg-gray-800' : 'bg-white',
+    headerBorder: isDarkMode ? 'border-gray-700' : 'border-gray-200',
+    text: isDarkMode ? 'text-white' : 'text-gray-900',
+    textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-600',
+    textMuted: isDarkMode ? 'text-gray-400' : 'text-gray-500',
+    inputBg: isDarkMode ? 'bg-gray-700' : 'bg-gray-50',
+    inputBorder: isDarkMode ? 'border-gray-600' : 'border-gray-300',
+    inputText: isDarkMode ? 'text-white' : 'text-gray-900',
+    inputPlaceholder: isDarkMode ? 'placeholder-gray-400' : 'placeholder-gray-500',
+    buttonSecondary: isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-700',
+    modalBg: isDarkMode ? 'bg-gray-800' : 'bg-white',
+    modalBorder: isDarkMode ? 'border-gray-700' : 'border-gray-200',
+    tableBg: isDarkMode ? 'bg-gray-900' : 'bg-gray-50',
+    tableHover: isDarkMode ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50',
+    tableDivider: isDarkMode ? 'divide-gray-700' : 'divide-gray-200'
+  };
 
   // Load sales from localStorage on component mount
   useEffect(() => {
@@ -221,9 +248,9 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+    <div className={`min-h-screen transition-colors duration-300 ${themeClasses.background}`}>
       {/* Header */}
-      <header className="bg-gray-800 shadow-xl border-b border-gray-700">
+      <header className={`shadow-xl transition-colors duration-300 ${themeClasses.headerBg} border-b ${themeClasses.headerBorder}`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -231,13 +258,13 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Sales Tracker</h1>
-                <p className="text-sm text-gray-300">Manage your Xfinity sales records</p>
+                <h1 className={`text-2xl font-bold ${themeClasses.text}`}>Sales Tracker</h1>
+                <p className={`text-sm ${themeClasses.textSecondary}`}>Manage your Xfinity sales records</p>
               </div>
             </div>
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors duration-200 shadow-lg ${themeClasses.buttonSecondary}`}
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Tracker</span>
@@ -249,50 +276,50 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
+          <div className={`rounded-xl shadow-xl p-6 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Sales</p>
-                <p className="text-2xl font-bold text-white">{statusCounts.all}</p>
+                <p className={`text-sm font-medium ${themeClasses.textMuted}`}>Total Sales</p>
+                <p className={`text-2xl font-bold ${themeClasses.text}`}>{statusCounts.all}</p>
               </div>
               <DollarSign className="w-8 h-8 text-blue-500" />
             </div>
           </div>
           
-          <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
+          <div className={`rounded-xl shadow-xl p-6 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Pending</p>
+                <p className={`text-sm font-medium ${themeClasses.textMuted}`}>Pending</p>
                 <p className="text-2xl font-bold text-yellow-400">{statusCounts.pending}</p>
               </div>
               <Clock className="w-8 h-8 text-yellow-500" />
             </div>
           </div>
           
-          <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
+          <div className={`rounded-xl shadow-xl p-6 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Callbacks</p>
+                <p className={`text-sm font-medium ${themeClasses.textMuted}`}>Callbacks</p>
                 <p className="text-2xl font-bold text-blue-400">{statusCounts.callback}</p>
               </div>
               <PhoneCall className="w-8 h-8 text-blue-500" />
             </div>
           </div>
           
-          <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
+          <div className={`rounded-xl shadow-xl p-6 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Activated</p>
+                <p className={`text-sm font-medium ${themeClasses.textMuted}`}>Activated</p>
                 <p className="text-2xl font-bold text-emerald-400">{statusCounts.activated}</p>
               </div>
               <CheckCircle2 className="w-8 h-8 text-emerald-500" />
             </div>
           </div>
           
-          <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
+          <div className={`rounded-xl shadow-xl p-6 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Cancelled</p>
+                <p className={`text-sm font-medium ${themeClasses.textMuted}`}>Cancelled</p>
                 <p className="text-2xl font-bold text-red-400">{statusCounts.cancelled}</p>
               </div>
               <XCircle className="w-8 h-8 text-red-500" />
@@ -301,26 +328,26 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
         </div>
 
         {/* Controls */}
-        <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
+        <div className={`rounded-xl shadow-xl p-6 mb-8 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${themeClasses.textMuted}`} />
                 <input
                   type="text"
                   placeholder="Search sales..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64"
+                  className={`pl-10 pr-4 py-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64 ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                 />
               </div>
               
               <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Filter className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${themeClasses.textMuted}`} />
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="pl-10 pr-8 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+                  className={`pl-10 pr-8 py-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText}`}
                 >
                   <option value="all">All Status</option>
                   <option value="pending">Pending</option>
@@ -352,56 +379,56 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
         </div>
 
         {/* Sales Table */}
-        <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
+        <div className={`rounded-xl shadow-xl overflow-hidden transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-900">
+              <thead className={themeClasses.tableBg}>
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Customer</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Account</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Phone</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Amount</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Customer</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Account</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Phone</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Status</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Product</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Amount</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Date</th>
+                  <th className={`px-6 py-4 text-left text-xs font-medium uppercase tracking-wider ${themeClasses.textSecondary}`}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className={`${themeClasses.tableDivider} divide-y`}>
                 {filteredSales.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center text-gray-400">
-                      <DollarSign className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+                    <td colSpan={8} className={`px-6 py-12 text-center ${themeClasses.textMuted}`}>
+                      <DollarSign className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
                       <p className="text-lg font-medium">No sales records found</p>
                       <p className="text-sm">Add your first sale to get started</p>
                     </td>
                   </tr>
                 ) : (
                   filteredSales.map((sale) => (
-                    <tr key={sale.id} className="hover:bg-gray-700/50 transition-colors duration-200">
+                    <tr key={sale.id} className={`transition-colors duration-200 ${themeClasses.tableHover}`}>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
                           <div className="bg-blue-600 rounded-full p-2">
                             <User className="w-4 h-4 text-white" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-white">{sale.customerName}</p>
+                            <p className={`text-sm font-medium ${themeClasses.text}`}>{sale.customerName}</p>
                             {sale.notes && (
-                              <p className="text-xs text-gray-400 truncate max-w-32">{sale.notes}</p>
+                              <p className={`text-xs truncate max-w-32 ${themeClasses.textMuted}`}>{sale.notes}</p>
                             )}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
-                          <Hash className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-300 font-mono">{sale.accountNumber}</span>
+                          <Hash className={`w-4 h-4 ${themeClasses.textMuted}`} />
+                          <span className={`text-sm font-mono ${themeClasses.textSecondary}`}>{sale.accountNumber}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
-                          <Phone className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-300">{sale.callbackNumber}</span>
+                          <Phone className={`w-4 h-4 ${themeClasses.textMuted}`} />
+                          <span className={`text-sm ${themeClasses.textSecondary}`}>{sale.callbackNumber}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -411,7 +438,7 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-300">{sale.product || '-'}</span>
+                        <span className={`text-sm ${themeClasses.textSecondary}`}>{sale.product || '-'}</span>
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-sm font-medium text-emerald-400">
@@ -420,8 +447,8 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-300">{sale.dateCreated.toLocaleDateString()}</span>
+                          <Calendar className={`w-4 h-4 ${themeClasses.textMuted}`} />
+                          <span className={`text-sm ${themeClasses.textSecondary}`}>{sale.dateCreated.toLocaleDateString()}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -452,10 +479,10 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
       {/* Add/Edit Sale Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-700">
+          <div className={`rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transition-colors duration-300 ${themeClasses.modalBg} border ${themeClasses.modalBorder}`}>
+            <div className={`p-6 border-b ${themeClasses.cardBorder}`}>
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-white">
+                <h3 className={`text-xl font-semibold ${themeClasses.text}`}>
                   {editingSale ? 'Edit Sale Record' : 'Add New Sale'}
                 </h3>
                 <button
@@ -472,7 +499,7 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                       product: ''
                     });
                   }}
-                  className="p-2 text-gray-400 hover:text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  className={`p-2 rounded-lg transition-colors duration-200 ${themeClasses.textMuted} hover:${themeClasses.text} hover:${themeClasses.buttonSecondary}`}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -482,7 +509,7 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                     Account Number *
                   </label>
                   <input
@@ -490,12 +517,12 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                     value={newSale.accountNumber || ''}
                     onChange={(e) => setNewSale(prev => ({ ...prev, accountNumber: e.target.value }))}
                     placeholder="Enter account number"
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                     Customer Name *
                   </label>
                   <input
@@ -503,12 +530,12 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                     value={newSale.customerName || ''}
                     onChange={(e) => setNewSale(prev => ({ ...prev, customerName: e.target.value }))}
                     placeholder="Enter customer name"
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                     Callback Number *
                   </label>
                   <input
@@ -516,18 +543,18 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                     value={newSale.callbackNumber || ''}
                     onChange={(e) => setNewSale(prev => ({ ...prev, callbackNumber: e.target.value }))}
                     placeholder="Enter phone number"
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                     Status
                   </label>
                   <select
                     value={newSale.status || 'pending'}
                     onChange={(e) => setNewSale(prev => ({ ...prev, status: e.target.value as any }))}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText}`}
                   >
                     <option value="pending">Pending</option>
                     <option value="callback">Callback</option>
@@ -537,7 +564,7 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                     Product/Service
                   </label>
                   <input
@@ -545,12 +572,12 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                     value={newSale.product || ''}
                     onChange={(e) => setNewSale(prev => ({ ...prev, product: e.target.value }))}
                     placeholder="Enter product or service"
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                     Sale Amount
                   </label>
                   <input
@@ -559,13 +586,13 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                     value={newSale.saleAmount || ''}
                     onChange={(e) => setNewSale(prev => ({ ...prev, saleAmount: parseFloat(e.target.value) || 0 }))}
                     placeholder="0.00"
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className={`block text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                   Notes
                 </label>
                 <textarea
@@ -573,12 +600,12 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                   onChange={(e) => setNewSale(prev => ({ ...prev, notes: e.target.value }))}
                   placeholder="Enter any additional notes..."
                   rows={4}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
                 />
               </div>
             </div>
             
-            <div className="p-6 border-t border-gray-700 flex justify-end space-x-3">
+            <div className={`p-6 border-t flex justify-end space-x-3 ${themeClasses.cardBorder}`}>
               <button
                 onClick={() => {
                   setShowAddModal(false);
@@ -593,7 +620,7 @@ const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack }) => {
                     product: ''
                   });
                 }}
-                className="px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                className={`px-4 py-2 rounded-lg transition-colors duration-200 ${themeClasses.textSecondary} hover:${themeClasses.text} hover:${themeClasses.buttonSecondary}`}
               >
                 Cancel
               </button>

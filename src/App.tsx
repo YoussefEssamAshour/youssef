@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3, Smartphone, Wifi, CreditCard, Clock } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3, Smartphone, Wifi, CreditCard, Clock, Sun, Moon } from 'lucide-react';
 import SalesTracker from './components/SalesTracker';
 import { CallItem, CallInfo, Objection, ViewType, MobileSalesStep } from './types';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewType>('tracker');
   const [expandedObjection, setExpandedObjection] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  
+  // Load theme preference from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('xfinity-theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    }
+  }, []);
+
+  // Save theme preference and apply to document
+  useEffect(() => {
+    localStorage.setItem('xfinity-theme', isDarkMode ? 'dark' : 'light');
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   const [callItems, setCallItems] = useState<CallItem[]>([
     {
       id: 'greeting',
@@ -448,34 +472,79 @@ Progress: ${Math.round(progressPercentage)}%`;
     return acc;
   }, {} as Record<string, MobileSalesStep[]>);
 
+  // Theme classes
+  const themeClasses = {
+    background: isDarkMode 
+      ? 'bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800' 
+      : 'bg-gradient-to-br from-gray-50 via-white to-gray-100',
+    cardBg: isDarkMode ? 'bg-gray-800' : 'bg-white',
+    cardBorder: isDarkMode ? 'border-gray-700' : 'border-gray-200',
+    headerBg: isDarkMode ? 'bg-gray-800' : 'bg-white',
+    headerBorder: isDarkMode ? 'border-gray-700' : 'border-gray-200',
+    text: isDarkMode ? 'text-white' : 'text-gray-900',
+    textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-600',
+    textMuted: isDarkMode ? 'text-gray-400' : 'text-gray-500',
+    inputBg: isDarkMode ? 'bg-gray-700' : 'bg-gray-50',
+    inputBorder: isDarkMode ? 'border-gray-600' : 'border-gray-300',
+    inputText: isDarkMode ? 'text-white' : 'text-gray-900',
+    inputPlaceholder: isDarkMode ? 'placeholder-gray-400' : 'placeholder-gray-500',
+    buttonSecondary: isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-700',
+    itemBg: isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50',
+    itemBorder: isDarkMode ? 'border-gray-600' : 'border-gray-300',
+    itemHover: isDarkMode ? 'hover:bg-gray-700/70' : 'hover:bg-gray-100',
+    scriptBg: isDarkMode ? 'bg-gray-900/30' : 'bg-gray-100/50',
+    scriptBorder: isDarkMode ? 'border-gray-600' : 'border-gray-300',
+    progressBg: isDarkMode ? 'bg-gray-800/95' : 'bg-white/95',
+    progressBorder: isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50'
+  };
+
   // Render Sales Tracker
   if (currentView === 'sales') {
-    return <SalesTracker onBack={() => setCurrentView('tracker')} />;
+    return <SalesTracker onBack={() => setCurrentView('tracker')} isDarkMode={isDarkMode} />;
   }
 
   // Render Xfinity Mobile Sales Process
   if (currentView === 'objections') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+      <div className={`min-h-screen transition-colors duration-300 ${themeClasses.background}`}>
+        {/* Theme Toggle Button */}
+        <div className="fixed top-4 right-4 z-50">
+          <button
+            onClick={toggleTheme}
+            className={`p-3 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
+              isDarkMode 
+                ? 'bg-yellow-500 hover:bg-yellow-400 text-yellow-900' 
+                : 'bg-gray-800 hover:bg-gray-700 text-yellow-400'
+            }`}
+            title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {isDarkMode ? (
+              <Sun className="w-5 h-5" />
+            ) : (
+              <Moon className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+
         {/* Floating Progress Bar for Mobile Sales */}
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
-          <div className="bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50 p-4">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-md px-4">
+          <div className={`backdrop-blur-lg rounded-2xl shadow-2xl p-4 transition-colors duration-300 ${themeClasses.progressBg} border ${themeClasses.progressBorder}`}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 <div className="p-1.5 bg-orange-600 rounded-lg">
                   <Smartphone className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-white">Mobile Sales Progress</h3>
-                  <p className="text-xs text-gray-400">Xfinity Mobile</p>
+                  <h3 className={`text-sm font-semibold ${themeClasses.text}`}>Mobile Sales Progress</h3>
+                  <p className={`text-xs ${themeClasses.textMuted}`}>Xfinity Mobile</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-sm font-bold text-white">{Math.round(mobileProgressPercentage)}%</span>
-                <p className="text-xs text-gray-400">{mobileCompletedCount}/{mobileTotalCount}</p>
+                <span className={`text-sm font-bold ${themeClasses.text}`}>{Math.round(mobileProgressPercentage)}%</span>
+                <p className={`text-xs ${themeClasses.textMuted}`}>{mobileCompletedCount}/{mobileTotalCount}</p>
               </div>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-2.5">
+            <div className={`w-full rounded-full h-2.5 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
               <div 
                 className="bg-gradient-to-r from-orange-500 to-orange-600 h-2.5 rounded-full transition-all duration-500 ease-out shadow-lg"
                 style={{ width: `${mobileProgressPercentage}%` }}
@@ -491,7 +560,7 @@ Progress: ${Math.round(progressPercentage)}%`;
         </div>
 
         {/* Header */}
-        <header className="bg-gray-800 shadow-xl border-b border-gray-700">
+        <header className={`shadow-xl transition-colors duration-300 ${themeClasses.headerBg} border-b ${themeClasses.headerBorder}`}>
           <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -499,13 +568,13 @@ Progress: ${Math.round(progressPercentage)}%`;
                   <Smartphone className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">Xfinity Mobile Sales Process</h1>
-                  <p className="text-sm text-gray-300">Step-by-step guide to convert customers to Xfinity Mobile</p>
+                  <h1 className={`text-2xl font-bold ${themeClasses.text}`}>Xfinity Mobile Sales Process</h1>
+                  <p className={`text-sm ${themeClasses.textSecondary}`}>Step-by-step guide to convert customers to Xfinity Mobile</p>
                 </div>
               </div>
               <button
                 onClick={() => setCurrentView('tracker')}
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors duration-200 shadow-lg ${themeClasses.buttonSecondary}`}
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Tracker</span>
@@ -556,7 +625,7 @@ Progress: ${Math.round(progressPercentage)}%`;
           {/* Mobile Sales Steps */}
           <div className="space-y-8">
             {Object.entries(groupedMobileSteps).map(([category, steps]) => (
-              <div key={category} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
+              <div key={category} className={`rounded-xl shadow-xl overflow-hidden transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
                 <div className={`bg-gradient-to-r ${getCategoryColor(category)} px-6 py-4`}>
                   <h3 className="text-lg font-semibold text-white">
                     {getCategoryTitle(category)}
@@ -576,7 +645,7 @@ Progress: ${Math.round(progressPercentage)}%`;
                         className={`group p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
                           step.completed
                             ? 'border-emerald-500 bg-emerald-900/30 hover:bg-emerald-900/40'
-                            : 'border-gray-600 bg-gray-700/50 hover:border-gray-500 hover:shadow-lg hover:bg-gray-700/70'
+                            : `${themeClasses.itemBorder} ${themeClasses.itemBg} hover:border-gray-500 hover:shadow-lg ${themeClasses.itemHover}`
                         }`}
                         onClick={() => toggleMobileStep(step.id)}
                       >
@@ -585,20 +654,20 @@ Progress: ${Math.round(progressPercentage)}%`;
                             {step.completed ? (
                               <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                             ) : (
-                              <Circle className="w-6 h-6 text-gray-400 group-hover:text-gray-300" />
+                              <Circle className={`w-6 h-6 ${themeClasses.textMuted} group-hover:text-gray-300`} />
                             )}
                           </div>
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-3 mb-3">
-                              <IconComponent className={`w-5 h-5 ${step.completed ? 'text-emerald-400' : 'text-gray-400'}`} />
-                              <h4 className={`font-semibold ${step.completed ? 'text-emerald-300' : 'text-white'}`}>
+                              <IconComponent className={`w-5 h-5 ${step.completed ? 'text-emerald-400' : themeClasses.textMuted}`} />
+                              <h4 className={`font-semibold ${step.completed ? 'text-emerald-300' : themeClasses.text}`}>
                                 {step.title}
                               </h4>
                             </div>
                             
-                            <div className={`p-4 rounded-lg mb-3 ${step.completed ? 'bg-gray-900/50 border border-emerald-600/30' : 'bg-gray-900/30 border border-gray-600'}`}>
-                              <p className={`text-base leading-relaxed font-bold ${step.completed ? 'text-emerald-200' : 'text-gray-200'}`}>
+                            <div className={`p-4 rounded-lg mb-3 transition-colors duration-300 ${step.completed ? 'bg-gray-900/50 border border-emerald-600/30' : `${themeClasses.scriptBg} border ${themeClasses.scriptBorder}`}`}>
+                              <p className={`text-base leading-relaxed font-bold ${step.completed ? 'text-emerald-200' : themeClasses.text}`}>
                                 <span className="font-semibold text-orange-400">Script: </span>
                                 "{step.verbatim}"
                               </p>
@@ -666,26 +735,45 @@ Progress: ${Math.round(progressPercentage)}%`;
 
   // Render Main Tracker View
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+    <div className={`min-h-screen transition-colors duration-300 ${themeClasses.background}`}>
+      {/* Theme Toggle Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={toggleTheme}
+          className={`p-3 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
+            isDarkMode 
+              ? 'bg-yellow-500 hover:bg-yellow-400 text-yellow-900' 
+              : 'bg-gray-800 hover:bg-gray-700 text-yellow-400'
+          }`}
+          title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {isDarkMode ? (
+            <Sun className="w-5 h-5" />
+          ) : (
+            <Moon className="w-5 h-5" />
+          )}
+        </button>
+      </div>
+
       {/* Floating Progress Bar */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
-        <div className="bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50 p-4">
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-md px-4">
+        <div className={`backdrop-blur-lg rounded-2xl shadow-2xl p-4 transition-colors duration-300 ${themeClasses.progressBg} border ${themeClasses.progressBorder}`}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <div className="p-1.5 bg-blue-600 rounded-lg">
                 <PhoneCall className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-white">Call Progress</h3>
-                <p className="text-xs text-gray-400">Call #{currentCall}</p>
+                <h3 className={`text-sm font-semibold ${themeClasses.text}`}>Call Progress</h3>
+                <p className={`text-xs ${themeClasses.textMuted}`}>Call #{currentCall}</p>
               </div>
             </div>
             <div className="text-right">
-              <span className="text-sm font-bold text-white">{Math.round(progressPercentage)}%</span>
-              <p className="text-xs text-gray-400">{completedCount}/{totalCount}</p>
+              <span className={`text-sm font-bold ${themeClasses.text}`}>{Math.round(progressPercentage)}%</span>
+              <p className={`text-xs ${themeClasses.textMuted}`}>{completedCount}/{totalCount}</p>
             </div>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-2.5">
+          <div className={`w-full rounded-full h-2.5 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
             <div 
               className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out shadow-lg"
               style={{ width: `${progressPercentage}%` }}
@@ -722,7 +810,7 @@ Progress: ${Math.round(progressPercentage)}%`;
       </div>
 
       {/* Header */}
-      <header className="bg-gray-800 shadow-xl border-b border-gray-700">
+      <header className={`shadow-xl transition-colors duration-300 ${themeClasses.headerBg} border-b ${themeClasses.headerBorder}`}>
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -730,14 +818,14 @@ Progress: ${Math.round(progressPercentage)}%`;
                 <PhoneCall className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Xfinity Call Tracker</h1>
-                <p className="text-sm text-gray-300">Call #{currentCall} • Started at {callStartTime.toLocaleTimeString()}</p>
+                <h1 className={`text-2xl font-bold ${themeClasses.text}`}>Xfinity Call Tracker</h1>
+                <p className={`text-sm ${themeClasses.textSecondary}`}>Call #{currentCall} • Started at {callStartTime.toLocaleTimeString()}</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <button
                 onClick={resetCall}
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors duration-200 shadow-lg"
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors duration-200 shadow-lg ${themeClasses.buttonSecondary}`}
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>New Call</span>
@@ -749,11 +837,11 @@ Progress: ${Math.round(progressPercentage)}%`;
 
       <div className="max-w-6xl mx-auto px-6 py-8 pb-32 pt-24">
         {/* Customer Information Section */}
-        <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
+        <div className={`rounded-xl shadow-xl p-6 mb-8 transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <UserCheck className="w-6 h-6 text-blue-400" />
-              <h2 className="text-xl font-semibold text-white">Customer Information</h2>
+              <h2 className={`text-xl font-semibold ${themeClasses.text}`}>Customer Information</h2>
             </div>
             <button
               onClick={copyToClipboard}
@@ -779,7 +867,7 @@ Progress: ${Math.round(progressPercentage)}%`;
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+              <label className={`flex items-center space-x-2 text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                 <Hash className="w-4 h-4" />
                 <span>Account Number</span>
               </label>
@@ -788,12 +876,12 @@ Progress: ${Math.round(progressPercentage)}%`;
                 value={callInfo.accountNumber}
                 onChange={(e) => updateCallInfo('accountNumber', e.target.value)}
                 placeholder="Enter account number"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
               />
             </div>
             
             <div>
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+              <label className={`flex items-center space-x-2 text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                 <User className="w-4 h-4" />
                 <span>Customer Name</span>
               </label>
@@ -802,12 +890,12 @@ Progress: ${Math.round(progressPercentage)}%`;
                 value={callInfo.customerName}
                 onChange={(e) => updateCallInfo('customerName', e.target.value)}
                 placeholder="Enter customer name"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
               />
             </div>
             
             <div>
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+              <label className={`flex items-center space-x-2 text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
                 <Phone className="w-4 h-4" />
                 <span>Phone Number</span>
               </label>
@@ -816,13 +904,13 @@ Progress: ${Math.round(progressPercentage)}%`;
                 value={callInfo.phoneNumber}
                 onChange={(e) => updateCallInfo('phoneNumber', e.target.value)}
                 placeholder="Enter phone number"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
               />
             </div>
           </div>
           
           <div className="mt-6">
-            <label className="flex items-center space-x-2 text-sm font-medium text-gray-300 mb-2">
+            <label className={`flex items-center space-x-2 text-sm font-medium mb-2 ${themeClasses.textSecondary}`}>
               <FileText className="w-4 h-4" />
               <span>Additional Comments</span>
             </label>
@@ -831,7 +919,7 @@ Progress: ${Math.round(progressPercentage)}%`;
               onChange={(e) => updateCallInfo('comments', e.target.value)}
               placeholder="Enter any additional notes or comments about this call..."
               rows={4}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+              className={`w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${themeClasses.inputBg} border ${themeClasses.inputBorder} ${themeClasses.inputText} ${themeClasses.inputPlaceholder}`}
             />
           </div>
         </div>
@@ -839,7 +927,7 @@ Progress: ${Math.round(progressPercentage)}%`;
         {/* Call Checklist */}
         <div className="space-y-8">
           {Object.entries(groupedItems).map(([category, items]) => (
-            <div key={category} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
+            <div key={category} className={`rounded-xl shadow-xl overflow-hidden transition-colors duration-300 ${themeClasses.cardBg} border ${themeClasses.cardBorder}`}>
               <div className={`bg-gradient-to-r ${getCategoryColor(category)} px-6 py-4`}>
                 <h3 className="text-lg font-semibold text-white">
                   {getCategoryTitle(category)}
@@ -859,7 +947,7 @@ Progress: ${Math.round(progressPercentage)}%`;
                       className={`group p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
                         item.completed
                           ? 'border-emerald-500 bg-emerald-900/30 hover:bg-emerald-900/40'
-                          : 'border-gray-600 bg-gray-700/50 hover:border-gray-500 hover:shadow-lg hover:bg-gray-700/70'
+                          : `${themeClasses.itemBorder} ${themeClasses.itemBg} hover:border-gray-500 hover:shadow-lg ${themeClasses.itemHover}`
                       }`}
                       onClick={() => toggleItem(item.id)}
                     >
@@ -868,20 +956,20 @@ Progress: ${Math.round(progressPercentage)}%`;
                           {item.completed ? (
                             <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                           ) : (
-                            <Circle className="w-6 h-6 text-gray-400 group-hover:text-gray-300" />
+                            <Circle className={`w-6 h-6 ${themeClasses.textMuted} group-hover:text-gray-300`} />
                           )}
                         </div>
                         
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-3 mb-3">
-                            <IconComponent className={`w-5 h-5 ${item.completed ? 'text-emerald-400' : 'text-gray-400'}`} />
-                            <h4 className={`font-semibold ${item.completed ? 'text-emerald-300' : 'text-white'}`}>
+                            <IconComponent className={`w-5 h-5 ${item.completed ? 'text-emerald-400' : themeClasses.textMuted}`} />
+                            <h4 className={`font-semibold ${item.completed ? 'text-emerald-300' : themeClasses.text}`}>
                               {item.title}
                             </h4>
                           </div>
                           
-                          <div className={`p-4 rounded-lg ${item.completed ? 'bg-gray-900/50 border border-emerald-600/30' : 'bg-gray-900/30 border border-gray-600'}`}>
-                            <p className={`text-base leading-relaxed font-bold ${item.completed ? 'text-emerald-200' : 'text-gray-200'}`}>
+                          <div className={`p-4 rounded-lg transition-colors duration-300 ${item.completed ? 'bg-gray-900/50 border border-emerald-600/30' : `${themeClasses.scriptBg} border ${themeClasses.scriptBorder}`}`}>
+                            <p className={`text-base leading-relaxed font-bold ${item.completed ? 'text-emerald-200' : themeClasses.text}`}>
                               <span className="font-semibold text-blue-400">Script: </span>
                               "{item.verbatim}"
                             </p>

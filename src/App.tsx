@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3, Smartphone, Wifi, CreditCard, Clock, Sun, Moon } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3, Smartphone, Wifi, CreditCard, Clock, Sun, Moon, TrendingUp } from 'lucide-react';
 import SalesTracker from './components/SalesTracker';
+import Statistics from './components/Statistics';
 import { CallItem, CallInfo, Objection, ViewType, MobileSalesStep } from './types';
 
 function App() {
@@ -212,11 +213,11 @@ function App() {
     {
       id: 'urgency-creation',
       title: 'Create Urgency',
-      verbatim: 'Here\'s what I can do for you today - I can get you started with Xfinity Mobile right now and you\'ll see those savings on your very next bill. Plus, since you\'re already an Xfinity customer, there\'s no activation fee, which normally costs $35.',
+      verbatim: 'Here\'s what I can do for you today - I can get you started with Xfinity Mobile right now and you\'ll see those savings on your very next bill. This is a limited-time opportunity for existing Xfinity customers.',
       icon: Clock,
       completed: false,
       category: 'closing',
-      tips: 'Mention the waived activation fee as an additional benefit of acting today.'
+      tips: 'Create urgency without mentioning activation fees. Focus on immediate savings.'
     },
     {
       id: 'address-concerns',
@@ -230,7 +231,7 @@ function App() {
     {
       id: 'close-the-sale',
       title: 'Close the Sale',
-      verbatim: 'Based on everything we\'ve discussed - the $[monthly savings] in savings, keeping your same number, getting Verizon\'s premium network, and no activation fee - does it make sense to get you set up with Xfinity Mobile today?',
+      verbatim: 'Based on everything we\'ve discussed - the $[monthly savings] in savings, keeping your same number, getting Verizon\'s premium network - does it make sense to get you set up with Xfinity Mobile today?',
       icon: CheckCircle2,
       completed: false,
       category: 'closing',
@@ -305,6 +306,36 @@ function App() {
   });
   const [copied, setCopied] = useState(false);
 
+  // Track call statistics
+  const saveCallStatistics = (completedItems: string[], categoryStats: any) => {
+    const callData = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      completionRate: (completedItems.length / callItems.length) * 100,
+      completedItems,
+      categoryStats,
+      duration: Math.floor((new Date().getTime() - callStartTime.getTime()) / 60000) // in minutes
+    };
+
+    const existingHistory = JSON.parse(localStorage.getItem('xfinity-call-history') || '[]');
+    existingHistory.push(callData);
+    localStorage.setItem('xfinity-call-history', JSON.stringify(existingHistory));
+  };
+
+  // Track mobile sales attempts
+  const saveMobileSalesAttempt = () => {
+    const mobileSalesData = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      completedSteps: mobileSalesSteps.filter(step => step.completed).length,
+      totalSteps: mobileSalesSteps.length
+    };
+
+    const existingHistory = JSON.parse(localStorage.getItem('xfinity-mobile-sales-history') || '[]');
+    existingHistory.push(mobileSalesData);
+    localStorage.setItem('xfinity-mobile-sales-history', JSON.stringify(existingHistory));
+  };
+
   const toggleItem = (id: string) => {
     setCallItems(prev => {
       const newItems = prev.map(item => 
@@ -366,6 +397,30 @@ function App() {
   };
 
   const resetCall = () => {
+    // Save call statistics before resetting
+    const completedItems = callItems.filter(item => item.completed).map(item => item.id);
+    const categoryStats = {
+      opening: {
+        completed: callItems.filter(item => item.category === 'opening' && item.completed).length,
+        total: callItems.filter(item => item.category === 'opening').length
+      },
+      connection: {
+        completed: callItems.filter(item => item.category === 'connection' && item.completed).length,
+        total: callItems.filter(item => item.category === 'connection').length
+      },
+      service: {
+        completed: callItems.filter(item => item.category === 'service' && item.completed).length,
+        total: callItems.filter(item => item.category === 'service').length
+      },
+      closing: {
+        completed: callItems.filter(item => item.category === 'closing' && item.completed).length,
+        total: callItems.filter(item => item.category === 'closing').length
+      }
+    };
+
+    saveCallStatistics(completedItems, categoryStats);
+
+    // Reset call state
     setCallItems(prev => prev.map(item => ({ ...item, completed: false })));
     setMobileSalesSteps(prev => prev.map(step => ({ ...step, completed: false })));
     setCurrentCall(prev => prev + 1);
@@ -498,6 +553,11 @@ Progress: ${Math.round(progressPercentage)}%`;
     progressBorder: isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50'
   };
 
+  // Render Statistics
+  if (currentView === 'statistics') {
+    return <Statistics onBack={() => setCurrentView('tracker')} isDarkMode={isDarkMode} />;
+  }
+
   // Render Sales Tracker
   if (currentView === 'sales') {
     return <SalesTracker onBack={() => setCurrentView('tracker')} isDarkMode={isDarkMode} />;
@@ -505,6 +565,11 @@ Progress: ${Math.round(progressPercentage)}%`;
 
   // Render Xfinity Mobile Sales Process
   if (currentView === 'objections') {
+    // Save mobile sales attempt when entering this view
+    useEffect(() => {
+      saveMobileSalesAttempt();
+    }, []);
+
     return (
       <div className={`min-h-screen transition-colors duration-300 ${themeClasses.background}`}>
         {/* Theme Toggle Button */}
@@ -597,7 +662,7 @@ Progress: ${Math.round(progressPercentage)}%`;
                     <li>• Verizon network quality</li>
                     <li>• Significant monthly savings</li>
                     <li>• Keep same phone number</li>
-                    <li>• No activation fees for Xfinity customers</li>
+                    <li>• Seamless switching process</li>
                   </ul>
                 </div>
                 <div className="bg-orange-800/30 rounded-lg p-3">
@@ -615,7 +680,7 @@ Progress: ${Math.round(progressPercentage)}%`;
                     <li>• Get exact current monthly cost</li>
                     <li>• Calculate specific savings</li>
                     <li>• Address concerns immediately</li>
-                    <li>• Create urgency with limited-time offers</li>
+                    <li>• Create urgency with savings</li>
                   </ul>
                 </div>
               </div>
@@ -790,6 +855,15 @@ Progress: ${Math.round(progressPercentage)}%`;
 
       {/* Floating Action Buttons */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
+        <button
+          onClick={() => setCurrentView('statistics')}
+          className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-purple-500/25"
+        >
+          <TrendingUp className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="font-semibold">Statistics</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+        </button>
+
         <button
           onClick={() => setCurrentView('sales')}
           className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-emerald-500/25"

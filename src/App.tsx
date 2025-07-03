@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3 } from 'lucide-react';
+import { Phone, CheckCircle2, Circle, RotateCcw, User, PhoneCall, Heart, Shield, MessageSquare, Star, Search, Users, Gift, Award, RefreshCw, HelpCircle, ThumbsUp, FileText, Hash, UserCheck, Copy, Check, ArrowRight, ArrowLeft, DollarSign, ChevronDown, ChevronRight, BarChart3, Smartphone, Wifi, CreditCard, Clock } from 'lucide-react';
 import SalesTracker from './components/SalesTracker';
-import { CallItem, CallInfo, Objection, ViewType } from './types';
+import { CallItem, CallInfo, Objection, ViewType, MobileSalesStep } from './types';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewType>('tracker');
@@ -121,6 +121,99 @@ function App() {
     }
   ]);
 
+  const [mobileSalesSteps, setMobileSalesSteps] = useState<MobileSalesStep[]>([
+    {
+      id: 'mobile-discovery',
+      title: 'Mobile Service Discovery',
+      verbatim: 'By the way, I noticed you\'re an Xfinity customer - are you currently using Xfinity Mobile for your cell phone service, or are you with a different carrier like Verizon, AT&T, or T-Mobile?',
+      icon: Smartphone,
+      completed: false,
+      category: 'discovery',
+      tips: 'Listen carefully to their current provider and monthly cost. This information is crucial for the savings calculation.'
+    },
+    {
+      id: 'current-bill-inquiry',
+      title: 'Current Mobile Bill Discovery',
+      verbatim: 'I see, and if you don\'t mind me asking, what are you currently paying monthly for your [carrier name] service? Is that for one line or multiple lines?',
+      icon: DollarSign,
+      completed: false,
+      category: 'discovery',
+      tips: 'Get the exact monthly amount. If they hesitate, say "I\'m asking because I might be able to save you some money."'
+    },
+    {
+      id: 'pain-point-identification',
+      title: 'Identify Pain Points',
+      verbatim: 'Wow, that\'s quite a bit! And how\'s the service been for you? Any issues with coverage, slow data speeds, or unexpected charges on your bill?',
+      icon: Search,
+      completed: false,
+      category: 'discovery',
+      tips: 'Listen for any complaints about their current service. These become selling points for Xfinity Mobile.'
+    },
+    {
+      id: 'xfinity-mobile-introduction',
+      title: 'Introduce Xfinity Mobile Benefits',
+      verbatim: 'Well, since you\'re already an Xfinity customer, you actually qualify for Xfinity Mobile, which runs on Verizon\'s network - the most reliable network in America. The best part is, you could potentially save $20-40 per month compared to what you\'re paying now.',
+      icon: Wifi,
+      completed: false,
+      category: 'presentation',
+      tips: 'Emphasize the Verizon network quality and immediate savings opportunity.'
+    },
+    {
+      id: 'keep-number-assurance',
+      title: 'Number Portability Assurance',
+      verbatim: 'And don\'t worry - you get to keep your exact same phone number. We handle all the switching for you, so there\'s no hassle on your end. Your current service stays active until your new Xfinity Mobile service is up and running.',
+      icon: Phone,
+      completed: false,
+      category: 'presentation',
+      tips: 'Address the common concern about losing their number upfront.'
+    },
+    {
+      id: 'savings-calculation',
+      title: 'Calculate Specific Savings',
+      verbatim: 'Let me show you the savings - you mentioned you\'re paying $[current amount] with [carrier]. With Xfinity Mobile, you\'d pay just $[new amount] per month. That\'s a savings of $[difference] every single month, which adds up to $[annual savings] per year!',
+      icon: CreditCard,
+      completed: false,
+      category: 'presentation',
+      tips: 'Use their exact numbers. Make the annual savings sound significant.'
+    },
+    {
+      id: 'network-quality-emphasis',
+      title: 'Emphasize Network Quality',
+      verbatim: 'You\'re getting the exact same Verizon network coverage that Verizon customers pay premium prices for, but at a fraction of the cost because you\'re bundling it with your Xfinity services.',
+      icon: Wifi,
+      completed: false,
+      category: 'presentation',
+      tips: 'Reinforce that they\'re not sacrificing quality for savings.'
+    },
+    {
+      id: 'urgency-creation',
+      title: 'Create Urgency',
+      verbatim: 'Here\'s what I can do for you today - I can get you started with Xfinity Mobile right now and you\'ll see those savings on your very next bill. Plus, since you\'re already an Xfinity customer, there\'s no activation fee, which normally costs $35.',
+      icon: Clock,
+      completed: false,
+      category: 'closing',
+      tips: 'Mention the waived activation fee as an additional benefit of acting today.'
+    },
+    {
+      id: 'address-concerns',
+      title: 'Address Any Concerns',
+      verbatim: 'I know switching carriers can feel like a big decision. What questions or concerns do you have about making the switch? I\'m here to make sure you\'re 100% comfortable with this.',
+      icon: HelpCircle,
+      completed: false,
+      category: 'closing',
+      tips: 'Listen carefully and address each concern specifically. Common concerns: contract, phone compatibility, coverage.'
+    },
+    {
+      id: 'close-the-sale',
+      title: 'Close the Sale',
+      verbatim: 'Based on everything we\'ve discussed - the $[monthly savings] in savings, keeping your same number, getting Verizon\'s premium network, and no activation fee - does it make sense to get you set up with Xfinity Mobile today?',
+      icon: CheckCircle2,
+      completed: false,
+      category: 'closing',
+      tips: 'Summarize all benefits and ask for the sale directly. Pause and wait for their response.'
+    }
+  ]);
+
   const [objections, setObjections] = useState<Objection[]>([
     {
       id: 'too-expensive',
@@ -218,8 +311,39 @@ function App() {
     });
   };
 
+  const toggleMobileStep = (id: string) => {
+    setMobileSalesSteps(prev => {
+      const newSteps = prev.map(step => 
+        step.id === id ? { ...step, completed: !step.completed } : step
+      );
+      
+      // Auto-progress to next step if current step was just completed
+      const clickedStep = newSteps.find(step => step.id === id);
+      if (clickedStep?.completed) {
+        const currentIndex = newSteps.findIndex(step => step.id === id);
+        const nextStep = newSteps[currentIndex + 1];
+        
+        if (nextStep && !nextStep.completed) {
+          // Scroll to next step after a short delay
+          setTimeout(() => {
+            const nextElement = document.getElementById(`mobile-step-${nextStep.id}`);
+            if (nextElement) {
+              nextElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+              });
+            }
+          }, 300);
+        }
+      }
+      
+      return newSteps;
+    });
+  };
+
   const resetCall = () => {
     setCallItems(prev => prev.map(item => ({ ...item, completed: false })));
+    setMobileSalesSteps(prev => prev.map(step => ({ ...step, completed: false })));
     setCurrentCall(prev => prev + 1);
     setCallStartTime(new Date());
     setCallInfo({
@@ -280,12 +404,18 @@ Progress: ${Math.round(progressPercentage)}%`;
   const totalCount = callItems.length;
   const progressPercentage = (completedCount / totalCount) * 100;
 
+  const mobileCompletedCount = mobileSalesSteps.filter(step => step.completed).length;
+  const mobileTotalCount = mobileSalesSteps.length;
+  const mobileProgressPercentage = (mobileCompletedCount / mobileTotalCount) * 100;
+
   const getCategoryTitle = (category: string) => {
     switch (category) {
       case 'opening': return 'Call Opening';
       case 'connection': return 'Building Connection';
       case 'service': return 'Service & Support';
       case 'closing': return 'Call Closing';
+      case 'discovery': return 'Discovery & Qualification';
+      case 'presentation': return 'Presentation & Benefits';
       default: return '';
     }
   };
@@ -296,6 +426,8 @@ Progress: ${Math.round(progressPercentage)}%`;
       case 'connection': return 'from-emerald-600 to-emerald-700';
       case 'service': return 'from-purple-600 to-purple-700';
       case 'closing': return 'from-red-600 to-red-700';
+      case 'discovery': return 'from-orange-600 to-orange-700';
+      case 'presentation': return 'from-cyan-600 to-cyan-700';
       default: return 'from-gray-600 to-gray-700';
     }
   };
@@ -308,26 +440,67 @@ Progress: ${Math.round(progressPercentage)}%`;
     return acc;
   }, {} as Record<string, CallItem[]>);
 
+  const groupedMobileSteps = mobileSalesSteps.reduce((acc, step) => {
+    if (!acc[step.category]) {
+      acc[step.category] = [];
+    }
+    acc[step.category].push(step);
+    return acc;
+  }, {} as Record<string, MobileSalesStep[]>);
+
   // Render Sales Tracker
   if (currentView === 'sales') {
     return <SalesTracker onBack={() => setCurrentView('tracker')} />;
   }
 
-  // Render Objections View
+  // Render Xfinity Mobile Sales Process
   if (currentView === 'objections') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+        {/* Floating Progress Bar for Mobile Sales */}
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
+          <div className="bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-2">
+                <div className="p-1.5 bg-orange-600 rounded-lg">
+                  <Smartphone className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Mobile Sales Progress</h3>
+                  <p className="text-xs text-gray-400">Xfinity Mobile</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-sm font-bold text-white">{Math.round(mobileProgressPercentage)}%</span>
+                <p className="text-xs text-gray-400">{mobileCompletedCount}/{mobileTotalCount}</p>
+              </div>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-2.5">
+              <div 
+                className="bg-gradient-to-r from-orange-500 to-orange-600 h-2.5 rounded-full transition-all duration-500 ease-out shadow-lg"
+                style={{ width: `${mobileProgressPercentage}%` }}
+              />
+            </div>
+            {mobileProgressPercentage === 100 && (
+              <div className="mt-2 flex items-center justify-center space-x-1">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-medium text-emerald-400">Sale Complete!</span>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Header */}
         <header className="bg-gray-800 shadow-xl border-b border-gray-700">
           <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-orange-600 rounded-lg shadow-lg">
-                  <DollarSign className="w-6 h-6 text-white" />
+                  <Smartphone className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">Objection Handling</h1>
-                  <p className="text-sm text-gray-300">Customer objections and proven responses</p>
+                  <h1 className="text-2xl font-bold text-white">Xfinity Mobile Sales Process</h1>
+                  <p className="text-sm text-gray-300">Step-by-step guide to convert customers to Xfinity Mobile</p>
                 </div>
               </div>
               <button
@@ -341,103 +514,151 @@ Progress: ${Math.round(progressPercentage)}%`;
           </div>
         </header>
 
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-6 py-8 pb-32 pt-24">
           <div className="mb-8">
             <div className="bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl shadow-xl p-6 text-white">
-              <h2 className="text-xl font-bold mb-2">Objection Handling Guide</h2>
-              <p className="text-orange-100">
-                Click on any objection below to see the proven response. These are common customer objections and effective ways to overcome them.
+              <h2 className="text-xl font-bold mb-2">Xfinity Mobile Sales Strategy</h2>
+              <p className="text-orange-100 mb-4">
+                Follow this proven step-by-step process to successfully convert customers to Xfinity Mobile. Each step builds on the previous one to create a compelling case for switching.
               </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="bg-orange-800/30 rounded-lg p-3">
+                  <h4 className="font-semibold mb-1">Key Benefits to Emphasize:</h4>
+                  <ul className="space-y-1 text-orange-100">
+                    <li>• Verizon network quality</li>
+                    <li>• Significant monthly savings</li>
+                    <li>• Keep same phone number</li>
+                    <li>• No activation fees for Xfinity customers</li>
+                  </ul>
+                </div>
+                <div className="bg-orange-800/30 rounded-lg p-3">
+                  <h4 className="font-semibold mb-1">Common Objections:</h4>
+                  <ul className="space-y-1 text-orange-100">
+                    <li>• "I'm under contract"</li>
+                    <li>• "Happy with current provider"</li>
+                    <li>• "Need to think about it"</li>
+                    <li>• "Worried about coverage"</li>
+                  </ul>
+                </div>
+                <div className="bg-orange-800/30 rounded-lg p-3">
+                  <h4 className="font-semibold mb-1">Success Tips:</h4>
+                  <ul className="space-y-1 text-orange-100">
+                    <li>• Get exact current monthly cost</li>
+                    <li>• Calculate specific savings</li>
+                    <li>• Address concerns immediately</li>
+                    <li>• Create urgency with limited-time offers</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            {objections.map((objection, index) => (
-              <div key={objection.id} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
-                <button
-                  onClick={() => toggleObjection(objection.id)}
-                  className={`w-full px-6 py-4 bg-gradient-to-r ${objection.bgColor} hover:opacity-90 transition-all duration-200 flex items-center justify-between text-white`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
-                      {index + 1}
-                    </span>
-                    <span className="text-lg font-semibold text-left">{objection.objection}</span>
-                  </div>
-                  {expandedObjection === objection.id ? (
-                    <ChevronDown className="w-5 h-5" />
-                  ) : (
-                    <ChevronRight className="w-5 h-5" />
-                  )}
-                </button>
+          {/* Mobile Sales Steps */}
+          <div className="space-y-8">
+            {Object.entries(groupedMobileSteps).map(([category, steps]) => (
+              <div key={category} className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
+                <div className={`bg-gradient-to-r ${getCategoryColor(category)} px-6 py-4`}>
+                  <h3 className="text-lg font-semibold text-white">
+                    {getCategoryTitle(category)}
+                  </h3>
+                  <p className="text-sm text-white/80">
+                    {steps.filter(step => step.completed).length} of {steps.length} completed
+                  </p>
+                </div>
                 
-                {expandedObjection === objection.id && (
-                  <div className="p-6 bg-gray-900/50 border-t border-gray-600">
-                    <div className="space-y-4">
-                      <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
-                        <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center space-x-2">
-                          <MessageSquare className="w-4 h-4 text-blue-400" />
-                          <span>Conversation Preview:</span>
-                        </h4>
-                        <div className="space-y-3">
-                          <div className="flex items-start space-x-3">
-                            <div className="bg-red-600 rounded-full p-1">
-                              <User className="w-3 h-3 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-red-400 font-semibold text-sm">Customer:</p>
-                              <p className="text-red-300 bg-red-900/20 rounded-lg p-3 mt-1 border border-red-800/30">
-                                "{objection.objection}"
-                              </p>
-                            </div>
+                <div className="p-6 space-y-4">
+                  {steps.map((step) => {
+                    const IconComponent = step.icon;
+                    return (
+                      <div
+                        key={step.id}
+                        id={`mobile-step-${step.id}`}
+                        className={`group p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                          step.completed
+                            ? 'border-emerald-500 bg-emerald-900/30 hover:bg-emerald-900/40'
+                            : 'border-gray-600 bg-gray-700/50 hover:border-gray-500 hover:shadow-lg hover:bg-gray-700/70'
+                        }`}
+                        onClick={() => toggleMobileStep(step.id)}
+                      >
+                        <div className="flex items-start space-x-4">
+                          <div className="flex-shrink-0 pt-1">
+                            {step.completed ? (
+                              <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+                            ) : (
+                              <Circle className="w-6 h-6 text-gray-400 group-hover:text-gray-300" />
+                            )}
                           </div>
-                          <div className="flex items-start space-x-3">
-                            <div className="bg-emerald-600 rounded-full p-1">
-                              <PhoneCall className="w-3 h-3 text-white" />
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-3 mb-3">
+                              <IconComponent className={`w-5 h-5 ${step.completed ? 'text-emerald-400' : 'text-gray-400'}`} />
+                              <h4 className={`font-semibold ${step.completed ? 'text-emerald-300' : 'text-white'}`}>
+                                {step.title}
+                              </h4>
                             </div>
-                            <div className="flex-1">
-                              <p className="text-emerald-400 font-semibold text-sm">Your Response:</p>
-                              <p className="text-emerald-300 bg-emerald-900/20 rounded-lg p-3 mt-1 border border-emerald-800/30 leading-relaxed">
-                                "{objection.solution}"
+                            
+                            <div className={`p-4 rounded-lg mb-3 ${step.completed ? 'bg-gray-900/50 border border-emerald-600/30' : 'bg-gray-900/30 border border-gray-600'}`}>
+                              <p className={`text-base leading-relaxed font-bold ${step.completed ? 'text-emerald-200' : 'text-gray-200'}`}>
+                                <span className="font-semibold text-orange-400">Script: </span>
+                                "{step.verbatim}"
                               </p>
                             </div>
+
+                            {step.tips && (
+                              <div className={`p-3 rounded-lg ${step.completed ? 'bg-blue-900/20 border border-blue-600/30' : 'bg-blue-900/10 border border-blue-600/20'}`}>
+                                <p className={`text-sm ${step.completed ? 'text-blue-200' : 'text-blue-300'}`}>
+                                  <span className="font-semibold text-blue-400">💡 Tip: </span>
+                                  {step.tips}
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Tips Section */}
-          <div className="mt-8 bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
-              <HelpCircle className="w-5 h-5 text-blue-400" />
-              <span>Objection Handling Tips</span>
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-blue-400">Key Principles:</h4>
-                <ul className="space-y-1 text-sm">
-                  <li>• Listen actively and acknowledge their concern</li>
-                  <li>• Empathize before presenting solutions</li>
-                  <li>• Ask clarifying questions to understand the real issue</li>
-                  <li>• Connect benefits to their specific needs</li>
+          {/* Mobile Sales Summary */}
+          {mobileCompletedCount === mobileTotalCount && (
+            <div className="mt-8 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-xl shadow-xl p-6 text-white">
+              <div className="flex items-center space-x-3 mb-4">
+                <CheckCircle2 className="w-8 h-8" />
+                <h3 className="text-xl font-bold">Mobile Sales Process Completed!</h3>
+              </div>
+              <div className="bg-emerald-800/30 rounded-lg p-4 mb-4">
+                <h4 className="font-semibold mb-2">Next Steps:</h4>
+                <ul className="space-y-2 text-sm text-emerald-100">
+                  <li>• Process the mobile line order in the system</li>
+                  <li>• Schedule device delivery or store pickup</li>
+                  <li>• Provide customer with confirmation details</li>
+                  <li>• Set expectations for number porting timeline</li>
+                  <li>• Follow up within 24-48 hours to ensure satisfaction</li>
                 </ul>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-emerald-400">Best Practices:</h4>
-                <ul className="space-y-1 text-sm">
-                  <li>• Use their name when responding</li>
-                  <li>• Provide specific examples and calculations</li>
-                  <li>• Create urgency when appropriate</li>
-                  <li>• Always confirm understanding before moving forward</li>
-                </ul>
+              <p className="text-emerald-100 mb-4">
+                Excellent work! You've successfully guided the customer through the complete Xfinity Mobile sales process. 
+                Remember to document this sale in your sales tracker.
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setCurrentView('sales')}
+                  className="bg-white text-emerald-600 px-6 py-2 rounded-lg font-semibold hover:bg-emerald-50 transition-colors duration-200 shadow-lg"
+                >
+                  Record Sale
+                </button>
+                <button
+                  onClick={resetCall}
+                  className="bg-emerald-800 hover:bg-emerald-900 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-lg"
+                >
+                  Start New Sale
+                </button>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );
@@ -446,6 +667,39 @@ Progress: ${Math.round(progressPercentage)}%`;
   // Render Main Tracker View
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
+      {/* Floating Progress Bar */}
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
+        <div className="bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <div className="p-1.5 bg-blue-600 rounded-lg">
+                <PhoneCall className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-white">Call Progress</h3>
+                <p className="text-xs text-gray-400">Call #{currentCall}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-sm font-bold text-white">{Math.round(progressPercentage)}%</span>
+              <p className="text-xs text-gray-400">{completedCount}/{totalCount}</p>
+            </div>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2.5">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out shadow-lg"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+          {progressPercentage === 100 && (
+            <div className="mt-2 flex items-center justify-center space-x-1">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-medium text-emerald-400">Call Complete!</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Floating Action Buttons */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
         <button
@@ -461,8 +715,8 @@ Progress: ${Math.round(progressPercentage)}%`;
           onClick={() => setCurrentView('objections')}
           className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-orange-500/25"
         >
-          <DollarSign className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
-          <span className="font-semibold">Start Offering</span>
+          <Smartphone className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="font-semibold">Mobile Sales</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
         </button>
       </div>
@@ -493,7 +747,7 @@ Progress: ${Math.round(progressPercentage)}%`;
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-8 pb-32">
+      <div className="max-w-6xl mx-auto px-6 py-8 pb-32 pt-24">
         {/* Customer Information Section */}
         <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -579,27 +833,6 @@ Progress: ${Math.round(progressPercentage)}%`;
               rows={4}
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
             />
-          </div>
-        </div>
-
-        {/* Progress Section */}
-        <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Call Progress</h2>
-            <span className="text-sm font-medium text-gray-300">
-              {completedCount} of {totalCount} completed
-            </span>
-          </div>
-          <div className="w-full bg-gray-700 rounded-full h-3">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out shadow-lg"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-gray-400 mt-2">
-            <span>0%</span>
-            <span className="font-medium text-blue-400">{Math.round(progressPercentage)}%</span>
-            <span>100%</span>
           </div>
         </div>
 

@@ -21,6 +21,16 @@ export interface Objection {
   bgColor: string;
 }
 
+export interface MobileSalesStep {
+  id: string;
+  title: string;
+  verbatim: string;
+  icon: React.ComponentType<any>;
+  completed: boolean;
+  category: 'discovery' | 'presentation' | 'closing';
+  tips?: string;
+}
+
 export interface SaleRecord {
   id: string;
   accountNumber: string;

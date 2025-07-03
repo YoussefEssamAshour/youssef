@@ -44,4 +44,35 @@ export interface SaleRecord {
   product?: string;
 }
 
-export type ViewType = 'tracker' | 'objections' | 'sales';
+export interface CallStatistics {
+  totalCalls: number;
+  completedCalls: number;
+  averageCompletionRate: number;
+  qualityAttributes: {
+    [key: string]: {
+      used: number;
+      total: number;
+      percentage: number;
+    };
+  };
+  mobileSalesAttempts: number;
+  categoryPerformance: {
+    [key: string]: {
+      completed: number;
+      total: number;
+      percentage: number;
+    };
+  };
+  dailyStats: {
+    [date: string]: {
+      calls: number;
+      completionRate: number;
+      mobileSalesAttempts: number;
+    };
+  };
+  timeSpentOnCalls: number; // in minutes
+  bestPerformingAttributes: string[];
+  improvementAreas: string[];
+}
+
+export type ViewType = 'tracker' | 'objections' | 'sales' | 'statistics';

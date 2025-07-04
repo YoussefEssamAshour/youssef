@@ -27,6 +27,22 @@ function App() {
     }
   }, [isDarkMode]);
 
+  // Save mobile sales attempt when entering objections view
+  useEffect(() => {
+    if (currentView === 'objections') {
+      const mobileSalesData = {
+        id: Date.now().toString(),
+        date: new Date().toISOString(),
+        completedSteps: mobileSalesSteps.filter(step => step.completed).length,
+        totalSteps: mobileSalesSteps.length
+      };
+
+      const existingHistory = JSON.parse(localStorage.getItem('xfinity-mobile-sales-history') || '[]');
+      existingHistory.push(mobileSalesData);
+      localStorage.setItem('xfinity-mobile-sales-history', JSON.stringify(existingHistory));
+    }
+  }, [currentView]);
+
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -565,11 +581,6 @@ Progress: ${Math.round(progressPercentage)}%`;
 
   // Render Xfinity Mobile Sales Process
   if (currentView === 'objections') {
-    // Save mobile sales attempt when entering this view
-    useEffect(() => {
-      saveMobileSalesAttempt();
-    }, []);
-
     return (
       <div className={`min-h-screen transition-colors duration-300 ${themeClasses.background}`}>
         {/* Theme Toggle Button */}

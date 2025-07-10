@@ -363,28 +363,7 @@ function App() {
     },
     {
       id: 'not-good-time',
-      objection: 'It\'s not a good time / it\'s not the right time',
-      solution: 'I definitely want to make sure you\'re comfortable with the pace we\'re moving with. What do you think might change between now and the next XX months that is making you want to wait?',
-      bgColor: 'from-emerald-600 to-emerald-700'
-    },
-    {
-      id: 'good-with-current',
-      objection: 'I\'m good with my current provider',
-      solution: 'I\'m glad that you\'re doing well with your current provider and not facing any kind of issues but if it\'s affecting your expenses in a bad way I think you need to rethink it especially when all the prices are going up and up. I mean your money is better off in your pocket could calculate all the savings that we\'ll save by switching and after this it\'s your call',
-      bgColor: 'from-green-600 to-green-700'
-    }
-  ]);
-
-  const [currentCall, setCurrentCall] = useState(1);
-  const [callStartTime, setCallStartTime] = useState<Date>(new Date());
-  const [callInfo, setCallInfo] = useState<CallInfo>({
-    accountNumber: '',
-    customerName: '',
-    phoneNumber: '',
-    comments: ''
-  });
   const [showObjections, setShowObjections] = useState(false);
-  const [expandedObjection, setExpandedObjection] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   // Track call statistics

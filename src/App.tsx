@@ -90,6 +90,11 @@ export default function App() {
   const [showObjections, setShowObjections] = useState(false);
   const [expandedObjection, setExpandedObjection] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  
+  // Mobile Sales Objections state
+  const [showMobileObjections, setShowMobileObjections] = useState(false);
+  const [expandedMobileObjection, setExpandedMobileObjection] = useState<string | null>(null);
+  const [copiedMobile, setCopiedMobile] = useState(false);
 
   // Track call statistics
   useEffect(() => {
@@ -349,10 +354,15 @@ export default function App() {
     setCurrentView('tracker');
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, isMobile: boolean = false) => {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (isMobile) {
+      setCopiedMobile(true);
+      setTimeout(() => setCopiedMobile(false), 2000);
+    } else {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   if (currentView === 'sales') {
@@ -483,11 +493,11 @@ export default function App() {
           </div>
 
           {/* Objections Dropdown */}
-          <div className="fixed bottom-6 right-6 z-50">
+          <div className="fixed bottom-6 right-6 z-50 space-y-4">
             <div className="relative">
-              {showObjections && (
+              {showMobileObjections && (
                 <div className="absolute bottom-16 right-0 w-96 max-h-96 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 animate-in slide-in-from-bottom-2">
-                  <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-t-xl">
+                  <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-xl">
                     <h3 className="font-bold text-lg">Mobile Sales Objections</h3>
                     <p className="text-sm opacity-90">Click any objection for handling strategies</p>
                   </div>
@@ -495,8 +505,8 @@ export default function App() {
                     {mobileSalesObjections.map((objection) => (
                       <div key={objection.id} className="border-b border-gray-100 last:border-b-0">
                         <button
-                          onClick={() => setExpandedObjection(
-                            expandedObjection === objection.id ? null : objection.id
+                          onClick={() => setExpandedMobileObjection(
+                            expandedMobileObjection === objection.id ? null : objection.id
                           )}
                           className="w-full p-4 text-left hover:bg-gray-50 transition-colors duration-200"
                         >
@@ -506,7 +516,7 @@ export default function App() {
                               <h4 className="font-semibold text-gray-800">{objection.title}</h4>
                               <p className="text-sm text-gray-600">{objection.description}</p>
                             </div>
-                            {expandedObjection === objection.id ? (
+                            {expandedMobileObjection === objection.id ? (
                               <ChevronUp className="w-5 h-5 text-gray-400" />
                             ) : (
                               <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -514,17 +524,17 @@ export default function App() {
                           </div>
                         </button>
                         
-                        {expandedObjection === objection.id && (
+                        {expandedMobileObjection === objection.id && (
                           <div className="px-4 pb-4 bg-gray-50">
                             <div className="bg-white rounded-lg p-4 shadow-sm">
                               <div className="flex items-center justify-between mb-3">
                                 <h5 className="font-semibold text-gray-800">Response Strategy:</h5>
                                 <button
-                                  onClick={() => copyToClipboard(objection.response)}
+                                  onClick={() => copyToClipboard(objection.response, true)}
                                   className="p-1 hover:bg-gray-100 rounded transition-colors duration-200"
                                   title="Copy response"
                                 >
-                                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-gray-500" />}
+                                  {copiedMobile ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-gray-500" />}
                                 </button>
                               </div>
                               <p className="text-gray-700 text-sm leading-relaxed mb-3">
@@ -539,12 +549,12 @@ export default function App() {
                                       {tip}
                                     </li>
                                   ))}
-                                </ul>
-                              </div>
+              onClick={() => setShowMobileObjections(!showMobileObjections)}
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
                             </div>
-                          </div>
-                        )}
-                      </div>
+              <Phone className="w-5 h-5" />
+              <span className="font-semibold">Mobile Objections</span>
+              {showMobileObjections ? (
                     ))}
                   </div>
                 </div>

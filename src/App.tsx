@@ -320,6 +320,8 @@ function App() {
     phoneNumber: '',
     comments: ''
   });
+  const [showObjections, setShowObjections] = useState(false);
+  const [expandedObjection, setExpandedObjection] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   // Track call statistics
@@ -1126,6 +1128,76 @@ Progress: ${Math.round(progressPercentage)}%`;
                   </>
                 )}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Objections Dropdown */}
+        {currentView === 'objections' && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <div className="relative">
+              <button
+                onClick={() => setShowObjections(!showObjections)}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-xl shadow-xl transition-all duration-300 transform hover:scale-105 ${
+                  showObjections 
+                    ? 'bg-red-600 hover:bg-red-700' 
+                    : 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
+                } text-white`}
+              >
+                <AlertTriangle className="w-5 h-5" />
+                <span className="font-medium">Handle Objections</span>
+                <ChevronUp className={`w-4 h-4 transition-transform duration-200 ${showObjections ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Objections Dropdown */}
+              {showObjections && (
+                <div className={`absolute bottom-full right-0 mb-2 w-96 max-h-96 overflow-y-auto rounded-xl shadow-2xl border transition-colors duration-300 ${themeClasses.cardBg} ${themeClasses.cardBorder}`}>
+                  <div className={`p-4 border-b ${themeClasses.cardBorder}`}>
+                    <h3 className={`font-semibold text-lg ${themeClasses.text}`}>Common Objections & Responses</h3>
+                    <p className={`text-sm ${themeClasses.textMuted}`}>Click on any objection to see how to handle it</p>
+                  </div>
+                  
+                  <div className="p-2 space-y-1">
+                    {objections.map((objection) => (
+                      <div key={objection.id} className="border rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => setExpandedObjection(expandedObjection === objection.id ? null : objection.id)}
+                          className={`w-full p-3 text-left transition-colors duration-200 hover:${themeClasses.tableHover} ${themeClasses.text}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className={`w-3 h-3 rounded-full ${objection.bgColor}`} />
+                              <span className="font-medium text-sm">{objection.objection}</span>
+                            </div>
+                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                              expandedObjection === objection.id ? 'rotate-180' : ''
+                            }`} />
+                          </div>
+                        </button>
+                        
+                        {expandedObjection === objection.id && (
+                          <div className={`p-4 border-t ${themeClasses.cardBorder} ${themeClasses.tableBg}`}>
+                            <div className="space-y-3">
+                              <div>
+                                <h4 className={`font-medium text-sm mb-2 ${themeClasses.text}`}>How to Handle:</h4>
+                                <p className={`text-sm leading-relaxed ${themeClasses.textSecondary}`}>
+                                  {objection.solution}
+                                </p>
+                              </div>
+                              
+                              <div className={`p-3 rounded-lg ${objection.bgColor} bg-opacity-10`}>
+                                <p className={`text-xs font-medium ${themeClasses.textMuted}`}>
+                                  💡 <strong>Pro Tip:</strong> Always acknowledge their concern first, then provide the solution with specific benefits.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

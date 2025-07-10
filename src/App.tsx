@@ -17,6 +17,69 @@ function App() {
     }
   }, []);
 
+  // Objections data
+  const objections = [
+    {
+      id: '1',
+      objection: "I'm happy with my current carrier",
+      solution: "I understand you're satisfied with your current service. Many of our customers felt the same way before switching. However, let me ask - are you paying more than $30-40 per month? With Xfinity Mobile, you get the same reliable Verizon network coverage you're used to, but at a fraction of the cost. You could save $20-40 every month while keeping the same great service quality. Would saving that much money each month be worth considering?",
+      bgColor: 'bg-blue-500'
+    },
+    {
+      id: '2',
+      objection: "I don't want to change my phone number",
+      solution: "That's completely understandable - your phone number is important to you. The great news is you absolutely don't have to change it! We can transfer your existing number to Xfinity Mobile at no cost. The process is simple and seamless - we handle everything for you. You'll keep the exact same number you've always had, but now you'll be saving money every month. Would you like me to explain how the number transfer process works?",
+      bgColor: 'bg-green-500'
+    },
+    {
+      id: '3',
+      objection: "I'm in a contract with my current carrier",
+      solution: "I understand contracts can feel limiting. Here's what I'd suggest - let's calculate your potential savings with Xfinity Mobile. Many customers find that even if they have to pay an early termination fee, they save so much money monthly that they break even within 2-3 months. For example, if you're saving $30/month and your ETF is $150, you'd break even in 5 months and then save $360 every year after that. Would you like me to help you calculate your specific savings?",
+      bgColor: 'bg-yellow-500'
+    },
+    {
+      id: '4',
+      objection: "I need to think about it",
+      solution: "I completely understand wanting to make an informed decision. Let me help you with that thinking process. What specific concerns do you have? Is it about the network coverage, the savings amount, or the switching process? I can address any questions right now. Also, since you're already an Xfinity customer, this limited-time offer might not be available later. What would help you feel confident about moving forward today?",
+      bgColor: 'bg-purple-500'
+    },
+    {
+      id: '5',
+      objection: "I don't trust the network coverage",
+      solution: "That's a smart concern - network coverage is crucial. Here's what makes this different: Xfinity Mobile uses the exact same Verizon network that covers 99% of Americans. It's not a separate network - it's literally the same towers and infrastructure that Verizon customers use. So if Verizon works well in your area, Xfinity Mobile will work exactly the same. Plus, we offer a 30-day money-back guarantee, so you can try it risk-free. Would you like to test it out?",
+      bgColor: 'bg-red-500'
+    },
+    {
+      id: '6',
+      objection: "It sounds too good to be true",
+      solution: "I appreciate your skepticism - it shows you're a smart consumer. You're right to question it because the savings are significant. Here's why we can offer these prices: as an existing Xfinity customer, you're already part of our family. We can offer mobile service at cost because we make our profit from your internet service. It's our way of rewarding loyal customers. The savings are real, and thousands of customers are already enjoying them. Would you like me to show you the exact pricing breakdown?",
+      bgColor: 'bg-indigo-500'
+    },
+    {
+      id: '7',
+      objection: "I need unlimited data",
+      solution: "Absolutely, unlimited data is important for heavy users. Xfinity Mobile offers truly unlimited data plans starting at just $45/month. Compare that to Verizon's unlimited at $80+ or AT&T at $75+. You get the same unlimited data on the same reliable network, but save $30-35 every month. That's over $400 in savings per year! Plus, if you have multiple lines, the savings multiply. How much are you currently paying for unlimited data?",
+      bgColor: 'bg-teal-500'
+    },
+    {
+      id: '8',
+      objection: "I have multiple lines/family plan",
+      solution: "Perfect! Family plans are where you see the biggest savings with Xfinity Mobile. Each additional line is only $20-30 more, compared to $40-50 with other carriers. For a family of 4, you could save $80-120 every month - that's over $1,000 per year! All family members keep their current numbers, and everyone gets the same reliable Verizon network coverage. Would you like me to calculate your family's specific savings?",
+      bgColor: 'bg-orange-500'
+    },
+    {
+      id: '9',
+      objection: "I need to talk to my spouse/family first",
+      solution: "That's completely reasonable - family decisions should be made together. Here's what I can do to help: I can send you all the information we've discussed today, including the exact savings calculation, so you can review it together. I can also schedule a quick call with both of you to answer any questions. Since this is a limited-time offer for Xfinity customers, would you prefer I hold this pricing for 24 hours while you discuss it?",
+      bgColor: 'bg-pink-500'
+    },
+    {
+      id: '10',
+      objection: "I barely use my phone/don't need much data",
+      solution: "That's perfect for Xfinity Mobile! If you're a light user, you can save even more. We have a 'By the Gig' plan where you only pay for the data you actually use - starting at just $15/month for 1GB. Most light users pay $20-25/month total. Compare that to the $50-70 you're probably paying now. You could save $300-500 per year! Plus, any unused data rolls over to the next month. Would you like to see how much data you actually used last month?",
+      bgColor: 'bg-cyan-500'
+    }
+  ];
   // Save theme preference and apply to document
   useEffect(() => {
     localStorage.setItem('xfinity-theme', isDarkMode ? 'dark' : 'light');

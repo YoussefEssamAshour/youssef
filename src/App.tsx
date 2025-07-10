@@ -129,7 +129,7 @@ export default function App() {
     },
     {
       id: 'no-money',
-      objection: 'Don't have money right now',
+      objection: 'Don\'t have money right now',
       solution: "I hear you, and that's exactly why this makes sense. You're already spending money on your current service. We're not asking for more money - we're showing you how to spend less and get more. You'll actually have more money in your pocket each month.",
       bgColor: 'from-purple-600 to-purple-700'
     },

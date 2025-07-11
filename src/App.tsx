@@ -18,125 +18,111 @@ const App: React.FC = () => {
 
   const mobileObjections: MobileObjection[] = [
     {
-      id: 'happy-with-carrier',
-      objection: "I'm happy with my current carrier",
-      brief: "Customer is satisfied with their current mobile service provider",
-      handling: "I understand you're satisfied with your current service, and that's great! What I'd like to show you is how you can keep that same level of satisfaction while potentially saving $30-50 per month. Xfinity Mobile runs on the same reliable Verizon network you're probably already familiar with, so you'll get the same great coverage. The difference is in the pricing - we can offer these savings because we're able to leverage our existing relationship with our internet customers. Would you be interested in seeing how much you could save while keeping the same quality service?",
+      id: 'too-expensive',
+      objection: "Too Expensive",
+      brief: "Empathizing with the customer is very important when it comes to this specific objection. Relating to him and restating the benefits connecting to his answers to the discovery questions asked.",
+      handling: "I totally understand that reducing monthly charges is really important. Believe me, I try to do that too! Earlier we discussed, (something customer has mentioned that turned into a need for a line) so it def sounds like something you'll be using on the long-term.",
       proTips: [
-        "Acknowledge their satisfaction first",
-        "Focus on savings while maintaining quality",
-        "Mention Verizon network for credibility",
-        "Ask permission to show savings"
+        "Empathize with the customer's concern about cost",
+        "Reference their specific needs from discovery questions",
+        "Connect benefits to their long-term usage",
+        "Show understanding of budget concerns"
       ]
     },
     {
-      id: 'phone-number',
-      objection: "I don't want to change my phone number",
-      brief: "Customer is concerned about losing their current phone number",
-      handling: "That's completely understandable - your phone number is important to you! The great news is that you absolutely don't have to change your phone number. We can transfer your current number to Xfinity Mobile at no cost to you. This process is called 'porting' and it's completely free. Your number will work exactly the same way, and all your contacts will still be able to reach you. The transfer usually takes just a few hours, and we handle all the paperwork for you. So you get to keep your familiar number while enjoying the savings of up to $50 per month. Does that address your concern?",
+      id: 'check-with-spouse',
+      objection: "I have to check in with my wife/husband",
+      brief: "Uncovering the spouse's needs and connecting the features and benefits to those needs",
+      handling: "I absolutely understand you would want to talk to your partner first. What questions do you think your wife will have?",
       proTips: [
-        "Immediately reassure them they can keep their number",
-        "Explain the porting process is free and easy",
-        "Mention the timeframe (few hours)",
-        "Emphasize the savings benefit"
+        "Acknowledge the need to consult with spouse",
+        "Ask about potential spouse concerns",
+        "Uncover spouse's specific needs",
+        "Connect benefits to both partners' needs"
       ]
     },
     {
-      id: 'contract',
-      objection: "I'm in a contract",
-      brief: "Customer believes they're locked into their current carrier contract",
-      handling: "I understand contracts can feel limiting. Let me ask - do you know when your contract ends and if there's an early termination fee? Even if there is a fee, let's do some quick math together. If you're paying $80/month now and could pay $45/month with Xfinity Mobile, that's $35 in monthly savings. Over 12 months, that's $420 in savings. If your early termination fee is $200, you'd still save $220 in the first year alone, and then $420 every year after that. Plus, with Xfinity Mobile, there are no annual contracts - you have the flexibility to change whenever you want. Would you like me to help you calculate your specific savings?",
-      proTips: [
-        "Ask about their specific contract terms",
-        "Do the math together to show break-even",
-        "Highlight long-term savings",
-        "Emphasize no-contract flexibility with Xfinity"
-      ]
-    },
-    {
-      id: 'think-about-it',
+      id: 'need-to-think',
       objection: "I need to think about it",
-      brief: "Customer wants to delay the decision",
-      handling: "I completely understand wanting to think it through - this is an important decision. Let me ask, what specific aspects would you like to think about? Is it the savings, the network coverage, or something else? I'd rather address any concerns you have right now while we're talking, so you have all the information you need to make the best decision. Also, I should mention that this promotional pricing I'm showing you today is only available for a limited time. I'd hate for you to miss out on these savings. What questions can I answer for you right now?",
+      brief: "Revisit how their values match nicely with our products and services. State again what is in it for them.",
+      handling: "I totally understand you may need time to think about it. Maybe I can help clear things up. What are your concerns?",
       proTips: [
-        "Ask what specifically they need to think about",
-        "Address concerns immediately",
-        "Create urgency with limited-time pricing",
-        "Keep them engaged with questions"
+        "Acknowledge their need for time",
+        "Offer to address specific concerns",
+        "Revisit value proposition",
+        "Ask open-ended questions about hesitations"
       ]
     },
     {
-      id: 'network-coverage',
-      objection: "I don't trust the network coverage",
-      brief: "Customer is concerned about service quality and coverage",
-      handling: "That's a very important concern, and I'm glad you brought it up! Here's something that might surprise you - Xfinity Mobile actually uses the exact same network as Verizon, which is consistently rated as the most reliable network in America. So if you've had good experiences with Verizon coverage, you'll get that same coverage with Xfinity Mobile. Plus, we also have access to millions of Xfinity WiFi hotspots nationwide, which means even better connectivity in many areas. And here's the best part - we're so confident in our coverage that we offer a 30-day money-back guarantee. You can try it risk-free for a full month, and if you're not completely satisfied with the coverage, we'll refund everything. Does that give you confidence in trying our service?",
+      id: 'under-contract',
+      objection: "I'm under a contract",
+      brief: "Revisit how their values match nicely with our products and services. Visit Xfinity.com/mobile to have a comparison and see how much you can save",
+      handling: "Mr. Customer, I totally understand that you're under a contract but let me tell you that the $20 you're saving every month by switching to Xfinity mobile can cover for any possible ETF in a year's time! So, it's definitely a save in the long run, as well, it seems perfectly suited for you and your family's needs",
       proTips: [
-        "Emphasize it's the same Verizon network",
-        "Mention WiFi hotspot advantage",
-        "Offer 30-day guarantee to reduce risk",
-        "Ask for commitment to try"
+        "Calculate monthly savings vs ETF costs",
+        "Show long-term financial benefits",
+        "Reference Xfinity.com/mobile for comparisons",
+        "Connect to family needs and values"
       ]
     },
     {
-      id: 'too-good-to-be-true',
-      objection: "It sounds too good to be true",
-      brief: "Customer is skeptical about the pricing and offers",
-      handling: "I understand your skepticism - when something sounds too good to be true, it often is! Let me explain exactly why we can offer these prices. Xfinity Mobile is part of Comcast, one of the largest telecommunications companies in America. We already have millions of customers for our internet service, and we can leverage that scale to negotiate better rates with network providers. We're not trying to make huge profits on mobile - we see it as a way to provide more value to our existing customers and attract new ones. Think of it like Costco - they can offer great prices because of their volume. Plus, we save money by not having physical stores everywhere like other carriers. These savings get passed on to you. Does that help explain how we can offer such competitive pricing?",
+      id: 'dont-need-line',
+      objection: "I don't need the line",
+      brief: "Response here should directly relate to the needs uncovered through discovery questions asked by yourself",
+      handling: "Mr. Customer, I totally understand how it might seem that way but based on what you told me (customer's needs) it definitely sounds like something you'll be needing and using to get the lifestyle you deserve",
       proTips: [
-        "Acknowledge their skepticism as reasonable",
-        "Explain the business model clearly",
-        "Use analogies like Costco for understanding",
-        "Emphasize company credibility (Comcast)"
+        "Reference specific customer needs from discovery",
+        "Connect service to their desired lifestyle",
+        "Show understanding while redirecting",
+        "Use their own words and needs against objection"
       ]
     },
     {
-      id: 'unlimited-data',
-      objection: "I need unlimited data",
-      brief: "Customer requires unlimited data usage",
-      handling: "Absolutely! We have unlimited data plans too, and they're still significantly cheaper than what you're probably paying now. Our unlimited plan starts at just $45 per line, compared to $70-80 you might be paying elsewhere. You get truly unlimited data on the Verizon network, plus access to millions of WiFi hotspots. And here's a bonus - if you have Xfinity Internet at home, you get an additional $10 discount per line, bringing it down to just $35 per month for unlimited data. That's less than half of what most people pay! Plus, there's no throttling after a certain amount like some carriers do. Would you like me to show you exactly how much you'd save with our unlimited plan?",
+      id: 'get-at-store',
+      objection: "I'm going to get it at the store",
+      brief: "Highlight how promotional phones discussed may not be available in stock at the specific store. Tackle any Urgency on Delivery for free.",
+      handling: "Mr. Customer, I totally understand you want to speak to someone face-to-face. What concerns do you have about doing this over the phone by the way? By the way, if you're concerned about delivery, I can sign you up for a promotion on free express shipping and guarantee the phone will be delivered asap but I wouldn't be able to guarantee you'd be able to find that device in the store's stock",
       proTips: [
-        "Immediately confirm unlimited is available",
-        "Compare pricing to competitors",
-        "Mention Xfinity Internet discount",
-        "Emphasize no throttling"
+        "Acknowledge preference for face-to-face interaction",
+        "Uncover specific concerns about phone sales",
+        "Highlight inventory availability issues",
+        "Offer free express shipping as advantage"
       ]
     },
     {
-      id: 'multiple-lines',
-      objection: "I have multiple lines/family plan",
-      brief: "Customer has a family plan with multiple phone lines",
-      handling: "That's perfect! Family plans are actually where you can save the most money with Xfinity Mobile. Let me show you - if you have 4 lines paying $200/month elsewhere, you could pay as little as $120/month with Xfinity Mobile, saving you $80 every single month. That's nearly $1,000 per year! Each additional line gets cheaper, and if you have Xfinity Internet, you save an extra $10 per line per month. So a family of 4 with Xfinity Internet could pay just $80/month total for unlimited data on all lines. How many lines do you currently have, and what are you paying per month? Let me calculate your exact savings.",
+      id: 'family-has-phones',
+      objection: "All family members have their own phones",
+      brief: "Highlight the savings the customer can get from having a family friend/neighbors/coworker etc. added to his account",
+      handling: "Mr. Customer, that's great to hear how connected you all are as a family together! Let me tell you, however about how much money you're saving for yourself paying $XX less for each line when you add that friend and you can have them Venmo you the money each month",
       proTips: [
-        "Emphasize family plans save the most",
-        "Use specific examples with dollar amounts",
-        "Mention per-line discounts",
-        "Ask for their specific situation to calculate"
+        "Acknowledge family connectivity positively",
+        "Introduce concept of adding non-family members",
+        "Show specific dollar savings per line",
+        "Suggest modern payment methods like Venmo"
       ]
     },
     {
-      id: 'talk-to-spouse',
-      objection: "I need to talk to my spouse/family",
-      brief: "Customer needs to consult with family members before deciding",
-      handling: "That makes perfect sense - family decisions should definitely be made together! Here's what I can do to make this easier for you. First, I can hold this exact pricing for you for the next 48 hours, so you don't have to worry about it changing while you discuss it. Second, I can send you a summary email with all the savings information we discussed, so you can share the exact details with your family. And third, if it would be helpful, I could schedule a brief call with both of you together so I can answer any questions your spouse might have. What would work best for you? And when would be a good time for me to follow up?",
+      id: 'not-good-time',
+      objection: "It's not a good time/It's not the right time",
+      brief: "Make sure that all concerns are covered because with this specific objection, you have most likely missed something that is still a concern for the customer",
+      handling: "I definitely want to make sure you're comfortable with the pace we're moving with. What do you think might change between now and the next XX months that is making you want to wait?",
       proTips: [
-        "Validate the need to consult family",
-        "Offer to hold pricing for 48 hours",
-        "Provide email summary for sharing",
-        "Offer joint call option",
-        "Schedule specific follow-up time"
+        "Slow down the pace and show understanding",
+        "Uncover the real underlying concerns",
+        "Ask about specific timing concerns",
+        "Address missed objections that may still exist"
       ]
     },
     {
-      id: 'barely-use-phone',
-      objection: "I barely use my phone",
-      brief: "Customer has very low mobile usage",
-      handling: "That's actually perfect for Xfinity Mobile! We have a 'By the Gig' plan that's ideal for light users like yourself. You only pay for the data you actually use - it's just $15 per month for the line, plus $12 per GB of data you use. So if you only use 1GB per month, your total bill would be just $27. Compare that to most carriers who charge $50-60 minimum, even if you barely use any data. Plus, you automatically connect to Xfinity WiFi hotspots, so you use even less cellular data. Many of our light-usage customers pay less than $30 per month total. Based on your usage, you could probably save $20-30 every month. Would you like me to help you estimate what your bill would be?",
+      id: 'good-with-current',
+      objection: "I'm good with my current provider",
+      brief: "Calculate the savings to the cx and try to show value in the product and the price",
+      handling: "I'm glad that you're doing well with your current provider and not facing any kind of issues but if it's affecting your expenses in a bad way, I think you need to rethink it especially when all the prices are going up and up, I mean your money is better off in your pocket. I could calculate all the savings that we'll save by switching and after this it's your call.",
       proTips: [
-        "Position 'By the Gig' as perfect solution",
-        "Give specific pricing examples",
-        "Compare to typical carrier minimums",
-        "Mention WiFi hotspot benefit",
-        "Offer to calculate their specific cost"
+        "Acknowledge their satisfaction with current provider",
+        "Focus on rising costs and expenses",
+        "Emphasize money staying in their pocket",
+        "Offer to calculate specific savings"
       ]
     }
   ];

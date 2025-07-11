@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Phone, Users, TrendingUp, Clock, BarChart3, AlertTriangle, ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 import SalesTracker from './components/SalesTracker';
-import { Statistics } from './components/Statistics';
+import Statistics from './components/Statistics';
 
 interface Sale {
   id: string;

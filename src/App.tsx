@@ -13,7 +13,8 @@ interface MobileObjection {
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<'home' | 'mobile' | 'internet' | 'stats'>('home');
-  const [selectedObjection, setSelectedObjection] = useState<string>('');
+  const [showMobileObjections, setShowMobileObjections] = useState(false);
+  const [expandedMobileObjection, setExpandedMobileObjection] = useState<string | null>(null);
   const [copiedObjection, setCopiedObjection] = useState<string | null>(null);
 
   const mobileObjections: MobileObjection[] = [
@@ -295,25 +296,6 @@ const App: React.FC = () => {
                           placeholder="2"
                         />
                       </div>
-                      
-                      {/* Mobile Objections Dropdown */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Common Objections
-                        </label>
-                        <select
-                          value={selectedObjection}
-                          onChange={(e) => setSelectedObjection(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                        >
-                          <option value="">Select an objection...</option>
-                          {mobileObjections.map((objection) => (
-                            <option key={objection.id} value={objection.id}>
-                              {objection.objection}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
                     </div>
                   </div>
                   
@@ -336,68 +318,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Selected Objection Details */}
-                {selectedObjection && (
-                  <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                    {(() => {
-                      const objection = mobileObjections.find(obj => obj.id === selectedObjection);
-                      if (!objection) return null;
-                      
-                      return (
-                        <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300">
-                              Objection: "{objection.objection}"
-                            </h3>
-                            <button
-                              onClick={() => copyToClipboard(objection.handling, objection.id)}
-                              className="inline-flex items-center px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-                            >
-                              {copiedObjection === objection.id ? (
-                                <>
-                                  <CheckCircle2 className="w-4 h-4 mr-1" />
-                                  Copied!
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-4 h-4 mr-1" />
-                                  Copy Response
-                                </>
-                              )}
-                            </button>
-                          </div>
-                          
-                          <div className="mb-4">
-                            <h4 className="font-medium text-blue-800 dark:text-blue-400 mb-2">Brief:</h4>
-                            <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">
-                              {objection.brief}
-                            </p>
-                          </div>
-                          
-                          <div className="mb-4">
-                            <h4 className="font-medium text-blue-800 dark:text-blue-400 mb-2">How to Handle:</h4>
-                            <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed mb-4">
-                              {objection.handling}
-                            </p>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-medium text-blue-800 dark:text-blue-400 mb-2">Pro Tips:</h4>
-                            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                              {objection.proTips.map((tip, index) => (
-                                <li key={index} className="flex items-start">
-                                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-2 flex-shrink-0" />
-                                  {tip}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                )}
-                
                 <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                   <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
                     Key Selling Points
@@ -412,6 +332,23 @@ const App: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Mobile Objections Floating Button */}
+            <button
+              onClick={() => setShowMobileObjections(!showMobileObjections)}
+              className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2 z-30"
+            >
+              <AlertTriangle className="w-5 h-5" />
+              <span className="font-medium">Mobile Objections</span>
+              {showMobileObjections ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </button>
+
+            {/* Mobile Objections Dropdown */}
+            {renderMobileObjectionsDropdown()}
           </div>
         );
       case 'internet':

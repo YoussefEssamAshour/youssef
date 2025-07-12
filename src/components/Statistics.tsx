@@ -25,6 +25,7 @@ import { CallStatistics } from '../types';
 interface StatisticsProps {
   onBack: () => void;
   isDarkMode: boolean;
+  isDarkMode: boolean;
 }
 
 const Statistics: React.FC<StatisticsProps> = ({ onBack, isDarkMode }) => {

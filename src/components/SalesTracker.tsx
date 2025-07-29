@@ -26,7 +26,6 @@ import { SaleRecord } from '../types';
 interface SalesTrackerProps {
   onBack: () => void;
   isDarkMode: boolean;
-  isDarkMode: boolean;
 }
 
 const SalesTracker: React.FC<SalesTrackerProps> = ({ onBack, isDarkMode }) => {
